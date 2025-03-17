@@ -3,3 +3,4 @@
 @yield('content')
 
 @include('auth.template.footer')
+

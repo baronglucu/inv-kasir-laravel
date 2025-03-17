@@ -137,7 +137,7 @@ div.dt-button-collection div.dropdown-menu {
   display: block;
   z-index: 2002;
   min-width: 100%;
-  background-color: transparent;
+  background-color: #9f9f9f;
   border: none;
   box-shadow: none;
   padding: 0;

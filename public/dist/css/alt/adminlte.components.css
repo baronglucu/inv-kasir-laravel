@@ -3012,7 +3012,7 @@ body.text-sm .input-group-text {
 .dark-mode select:-webkit-autofill,
 .dark-mode select:-webkit-autofill:hover,
 .dark-mode select:-webkit-autofill:focus {
-  -webkit-text-fill-color: #fff;
+  -webkit-text-fill-color: #000000;
 }
 
 .dark-mode .custom-range::-webkit-slider-runnable-track {

@@ -6,7 +6,7 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="../../index2.html" class="h1"><b>Aplikasi </b>Inventori</a>
+      <a href="#" class="h1"><b>Aplikasi </b>Inventori</a>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Login untuk memulai sesi</p>
@@ -21,31 +21,38 @@
             </div>
         @endif
 
-      <form action="../../index3.html" method="post">
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
+      <form action="{{ route('login.check') }}" method="post">
+        @csrf
+        <div class="input-group mb-1">
+          <input type="email" class="form-control" value="{{ old('email') }}" placeholder="Email" name="email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
-          </div>
+          </div>          
         </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
+        @error('email')
+            <div class="text-danger text-sm mb-2">{{ $message }}</div>
+        @enderror
+        <div class="input-group mt-3 mb-2">
+          <input type="password" class="form-control" placeholder="Password" name="password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
             </div>
-          </div>
+          </div>          
         </div>
+        @error('password')
+          <div class="text-danger text-sm">{{ $message }}</div>
+        @enderror
         <div class="row">
           <div class="col-8">
-            <div class="icheck-primary">
+            <!--<div class="icheck-primary">
               <input type="checkbox" id="remember">
               <label for="remember">
                 Mengingat saya
               </label>
-            </div>
+            </div> -->
           </div>
           <!-- /.col -->
           <div class="col-4">
@@ -55,14 +62,14 @@
         </div>
       </form>
 
-      <div class="social-auth-links text-center mt-2 mb-3">
+      {{-- <div class="social-auth-links text-center mt-2 mb-3">
         <a href="#" class="btn btn-block btn-primary">
           <i class="fab fa-facebook mr-2"></i> Login menggunakan Facebook
         </a>
         <a href="#" class="btn btn-block btn-danger">
           <i class="fab fa-google-plus mr-2"></i> Login menggunakan Google+
         </a>
-      </div>
+      </div> --}}
       <!-- /.social-auth-links -->
 
       <p class="mb-1">

@@ -13,10 +13,21 @@ return new class extends Migration
     {
         Schema::create('detail_penyedias', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_penyedia');
+            $table->string('id_mitra');
+            $table->string('nama_mitra');
             $table->string('notelp');
             $table->string('email');
             $table->string('alamat');
+            $table->string('kota');
+            $table->string('provinsi');
+            $table->string('alamat_web');
+            $table->string('nama_pimpinan');
+            $table->string('nohp_pimpinan');
+            $table->string('email_pimpinan');
+            $table->string('npwp');
+            $table->string('siup');
+            $table->string('keterangan');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('riwayatlisensis', function (Blueprint $table) {
             $table->id();
-            $table->string('id_software');
+            $table->string('serialNumber');
             $table->string('no_invoice');
             $table->date('tgl_transaksi');
             $table->date('tgl_lisensi');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('idpenyedia');
             $table->unsignedBigInteger('idnorek');
             $table->decimal('harga', 10, 2);
-            $table->unsignedBigInteger('userId');  
+            $table->unsignedBigInteger('user_id');  
             $table->text('keterangan');
             $table->timestamps();
         });
