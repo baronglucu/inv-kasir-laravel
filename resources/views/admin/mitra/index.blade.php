@@ -33,7 +33,7 @@
       <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ $title }}</h3>
+                <h3 class="card-title">{{ $subtitle }}</h3>
                 <button type="button" class="btn btn-sm btn-primary float-sm-right" data-toggle="modal" data-target="#modal-tambah"><i class="fa fa-plus"></i> Tambah </button>
             </div>
             <div class="card-body">
@@ -240,7 +240,7 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-</div> 
+
 
 <div class="modal fade" id="confirm" tabindex="-1" role="dialog" >
   <div class="modal-dialog">

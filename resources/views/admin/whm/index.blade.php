@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ asset('')}}plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <link rel="stylesheet" href="{{ asset('')}}plugins/sweetalert2/sweetalert2.css">
   <link rel="stylesheet" href="{{ asset('')}}plugins/sweetalert2/sweetalert2.min.css">
+
 @endsection
 
 @section('content')
@@ -35,7 +36,7 @@
       <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ $title }}</h3>
+                <h3 class="card-title">{{ $subtitle }}</h3>
                 <button type="button" class="btn btn-sm btn-primary float-sm-right" data-toggle="modal" data-target="#modal-tambah"><i class="fa fa-plus"></i> Tambah </button>
             </div>
             <div class="card-body">
@@ -69,8 +70,8 @@
                                 <td>{{ $item->nama_whm }}</td>
                                 <td>{{ $item->namaRak }}</td>
                                 <td>{{ $item->kapasitas }}</td>
-                                <td>{{ $item->tgl_aktif }}</td>
-                                <td>{{ $item->tgl_akhir }}</td>
+                                <td>{{ date('d-m-Y', strtotime( $item->tgl_aktif )) }}</td>
+                                <td>{{ date('d-m-Y', strtotime( $item->tgl_akhir )) }}</td>
                                 <td>{{ $item->lama_ssl }} tahun</td>
                                 <td>
                                   @if ($item->kondisi == 'bb')
@@ -86,7 +87,6 @@
                                 <td>
                                     {{-- {{ now()->toDateTimeLocalString() }} 
                                     {{ date('Y-m-d')}} --}}
-                                   
                                     @if ( date('Y-m-d' > $item->tgl_akhir ))
                                         <span class="badge badge-primary"> Aktif </span>
                                     @endif
@@ -97,14 +97,14 @@
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-primary" tooltip="Show" id="showDetail" data-id_whm="{{ $item->id }}"><i class="fas fa-eye"></i></button>
+                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('whm.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
                                     &nbsp;
                                     <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('whm.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;
                                     <form id="delete-form-{{ $item->id }}" action="{{ route('whm.destroy', $item->id) }}" method="POST">
                                       @csrf
                                       @method('DELETE')
-                                      <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})">Hapus</button>
+                                      <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})"><i class="fas fa-trash" value="Hapus Item"></i></button>
                                     </form>
                                   </div>
                                 </td>
@@ -121,7 +121,8 @@
   <!-- /.content-wrapper -->
 
   <!-- /.modal tambah data -->
-  <div class="modal fade" id="modal-tambah" tabindex="-1" role="dialog" >
+  {{-- <div class="modal fade" id="modal-tambah" tabindex="-1" role="dialog" > --}}
+    <div id="modal-tambah" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-tambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-secondary">
         <div class="modal-header">
@@ -137,7 +138,13 @@
                     <div class="col-md-6">
                         <div class="form-group">  
                             <label class="form-label">IP Address</label>
-                            <input type="text" class="form-control" name="ip_address" id="ip_address" minlength="7" maxlength="15" size="15" pattern="^(?>(\d|[1-9]\d{2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?1)$" placeholder="000.000.000.000" required>                               
+                            {{-- <input type="text" class="form-control" name="ip_address" id="ip_address" minlength="7" maxlength="15" size="15" pattern="^(?>(\d|[1-9]\d{2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?1)$" placeholder="000.000.000.000" required> --}}
+                            <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-laptop"></i></span>
+                            </div>
+                            <input type="text" class="form-control" name="ip_address" id="ip_address" data-inputmask="'alias': 'ip'" data-mask>
+                            </div>
                             <label for="nama_whm">Nama WHM</label>
                             <input type="text" id="nama_whm" name="nama_whm" class="form-control" required>
                             <div class="row g-3 align-items-center">
@@ -229,7 +236,7 @@
   </div>
 
   <!-- /.modal update data -->
-  <div class="modal fade" id="modal-update" tabindex="-1" role="dialog" >
+  <div class="modal fade" id="modal-update" tabindex="-1" data-focus="false" role="dialog" >
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-info">
         <div class="modal-header">
@@ -309,16 +316,29 @@
                                 @enderror
                             </div>
                         </div>
-                        <label for="lama_ssl">Lama berlaku SSL</label>
-                            <div class="input-group">                                
-                                <input type="number" class="form-control" id="lama_ssl" name="lama_ssl" min="1" required>
-                                <div class="input-group-append">
-                                  <span class="input-group-text">Tahun</span>
-                                </div>
-                            </div> 
+                        <div class="row">
+                          <div class="col-md-6">
+                            <label for="lama_ssl">Lama berlaku SSL</label>
+                              <div class="input-group">                                
+                                  <input type="number" class="form-control" id="lama_ssl" name="lama_ssl" min="1" required>
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">Tahun</span>
+                                  </div>
+                              </div> 
+                          </div>
+                          <div class="col-md-6">
+                            <label for="lama_ssl">Sisa berlaku SSL</label>
+                              <div class="input-group">                                
+                                  <input type="number" class="form-control" id="sisa_ssl" name="sisa_ssl" min="1" readonly>
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">Hari</span>
+                                  </div>
+                              </div>                             
+                          </div>
+                        </div>
                         <label for="keterangan">Keterangan</label>
-                        <textarea class="form-control" id="keterangan" name="keterangan" value="" rows="5"></textarea>
-                    </div>
+                        <textarea class="form-control" id="keterangan" name="keterangan" value="" rows="5"></textarea>  
+                      </div>
                   </div>
                 </div>
                 <div class="mt-3" >
@@ -336,7 +356,7 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-</div>
+
 
 <div class="modal fade" id="confirm" tabindex="-1" role="dialog" >
   <div class="modal-dialog">
@@ -358,6 +378,132 @@
   </div>
 </div>
 
+<!-- /.modal-detail -->
+<div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detail Data WHM</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Detail Data</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="row mt-1">
+                      <label for="ip_address" class="col-md-4">Alamat IP</label>
+                      <input type="text" class="form-control col-md-7" id="ip_address" name="ip_address" value="" disabled>
+                    </div>
+                    <div class="row mt-1">  
+                      <label for="nama_whm" class="col-md-4">Nama WHM</label>
+                      <input type="text" class="form-control col-md-7" id="nama_whm" name="nama_whm" value="" disabled>
+                    </div>
+                    <div class="row mt-1">  
+                      <label for="namaRak" class="col-md-4">Posisi Rak</label>
+                      <input type="text" class="form-control col-md-7" id="namaRak" name="namaRak" value="" disabled>
+                    </div>
+                    <div class="row mt-1"> 
+                      <label for="lama_ssl" class="col-md-4">Lama Aktif s.d.</label>
+                      
+                          <input type="text" class="form-control col-md-1" id="lama_ssl" name="lama_ssl" value="" disabled>
+                          <div class="input-group-append">
+                          <span class="input-group-text"> Tahun </span></div>
+                           
+                      <label for="lama_ssl" class="col-md-2">Sisa Aktif</label>
+                        <input type="text" class="form-control col-md-1" id="sisa_ssl" name="sisa_ssl" value="" disabled>
+                        <div class="input-group-append"><span class="input-group-text"> Hari </span></div>
+                    </div>
+                    <div class="row mt-1">  
+                      <label for="kondisi" class="col-md-4">Kondisi</label>
+                      <input type="text" class="form-control col-md-4" id="kondisi" name="kondisi" value="" disabled>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">                    
+                    <div class="row mt-1">  
+                      <label for="kapasitas" class="col-md-4">Kapasitas</label>
+                      <input type="text" class="form-control col-md-4" id="kapasitas" name="kapasitas" value="" disabled>
+                    </div>                    
+                    <div class="row mt-1"> 
+                      <label for="tgl_aktif" class="col-md-4">Tanggal Aktif</label>
+                      <input type="text" class="form-control col-md-4" id="tgl_aktif" name="tgl_aktif" value="" disabled>
+                    </div>
+                    <div class="row mt-1"> 
+                      <label for="tgl_akhir" class="col-md-4">Tanggal Akhir</label>
+                      <input type="text" class="form-control col-md-4" id="tgl_akhir" name="tgl_akhir" value="" disabled>
+                    </div>
+                    <div class="row mt-1">
+                      <label for="keterangan" class="col-md-4">Keterangan</label>
+                      <textarea class="form-control col-md-7" id="keterangan" name="keterangan" value="" rows="3" disabled></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Rekapitulasi Status Domain</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="row mt-1">
+                    <label for="eror" class="col-md-6 text-danger text-right">Error :</label>
+                    <input type="text" class="form-control col-md-4" id="eror" name="eror" value="" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="row mt-1">
+                    <label for="run" class="col-md-6 text-success text-right">Running :</label>
+                    <input type="text" class="form-control col-md-4" id="run" name="run" value="" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="row mt-1">
+                    <label for="main" class="col-md-6 text-warning text-right">Maintenance :</label>
+                    <input type="text" class="form-control col-md-4" id="main" name="main" value="" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="row mt-1">
+                    <label for="suspen" class="col-md-6 text-muted text-right">Suspend :</label>
+                    <input type="text" class="form-control col-md-4" id="suspen" name="suspen" value="" disabled>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+        </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 @endsection  
 
 @section('js')
@@ -424,9 +570,49 @@
 </script>
 <script>
   
+    // $(document).on('click', '#showDetail', function(){
+    //   let id = $(this).data('id');
+    //   alert(id);
+    // });
+
     $(document).on('click', '#showDetail', function(){
-      let id = $(this).data('id');
-      alert(id);
+      let idwhm = $(this).data('id');
+      var editURL = $(this).data('url');
+        $.get(editURL, function(data){
+            // console.log(data);
+            const ipa = JSON.stringify(data);
+            const iku = JSON.parse(ipa);
+
+            const tglakt = iku['panel'][0]['tgl_aktif'];
+            const tglakh = iku['panel'][0]['tgl_akhir'];
+            var options = { year: "numeric", month: "numeric", day: "numeric" };
+            const ftglaktif = new Date(tglakt).toLocaleDateString('es-CL', options); 
+            const ftglakhir = new Date(tglakh).toLocaleDateString('es-CL', options);   
+            var cek = iku['panel'][0]['kondisi']; 
+            
+            $('#modal-detail').modal('show');
+            $('#modal-detail #id').val(iku['panel'][0]['id']);
+            $('#modal-detail #ip_address').val(iku['panel'][0]['ip_address']);
+            $("#modal-detail #nama_whm").val(iku['panel'][0]['nama_whm']);
+            $("#modal-detail #namaRak").val(iku['panel'][0]['namaRak']);
+            $("#modal-detail #kapasitas").val(iku['panel'][0]['kapasitas']);
+            $("#modal-detail #tgl_aktif").val(ftglaktif);
+            $("#modal-detail #tgl_akhir").val(ftglakhir);
+            $("#modal-detail #lama_ssl").val(iku['panel'][0]['lama_ssl']);
+            $("#modal-detail #keterangan").val(iku['panel'][0]['keterangan']);
+            if(cek == 'bb'){
+              $("#modal-detail #kondisi").val("Baik");
+            }else if(cek == 'rr'){
+              $("#modal-detail #kondisi").val("Rusak Ringan");
+            }else if(cek == 'rb'){
+              $("#modal-detail #kondisi").val("Rusak Berat");
+            } 
+            $('#modal-detail #eror').val(iku['statusx'][0]['Eror']);
+            $('#modal-detail #run').val(iku['statusx'][0]['Run']);
+            $('#modal-detail #main').val(iku['statusx'][0]['Main']);
+            $('#modal-detail #suspen').val(iku['statusx'][0]['Suspen']);
+        })      
+
     });
 
 </script>
@@ -435,7 +621,7 @@
       $('#form-create-whm').submit(function(e) {
           e.preventDefault();
           dataForm = $(this).serialize() + "&_token={{ csrf_token() }}";  
-        //   alert(dataForm);
+          // alert(dataForm);
           $.ajax({
               type: 'POST',
               url: "{{ route('whm.store') }}",
@@ -493,35 +679,39 @@
         var editURL = $(this).data('url');
         $.get(editURL, function(data){
             // console.log(data);
-            var cek = data.kondisi;
+            const ipa = JSON.stringify(data);
+            const iku = JSON.parse(ipa);
+            // var dat = iku['panel'][0]['ip_address'];
+            // var ero = iku['statusx'][0]['Eror'];
+            var cek = iku['panel'][0]['kondisi']; 
             $('#modal-update').modal('show');
-            $('#form-update-whm #id').val(data.id);
-            $('#form-update-whm #ip_address').val(data.ip_address);
-            $('#form-update-whm #nama_whm').val(data.nama_whm);
-            $("#form-update-whm #kodeRak").val(data.kodeRak);            
-            $('#form-update-whm #kapasitas').val(data.kapasitas);
-            $("#form-update-whm #tgl_aktif").val(data.tgl_aktif);
-            $("#form-update-whm #tgl_akhir").val(data.tgl_akhir);
-            $('#form-update-whm #lama_ssl').val(data.lama_ssl);
+            $('#modal-update #id').val(iku['panel'][0]['id']);
+            $('#modal-update #ip_address').val(iku['panel'][0]['ip_address']);
+            $("#modal-update #nama_whm").val(iku['panel'][0]['nama_whm']);
+            $("#modal-update #kodeRak").val(iku['panel'][0]['kodeRak']);
+            $("#modal-update #kapasitas").val(iku['panel'][0]['kapasitas']);
+            $("#modal-update #tgl_aktif").val(iku['panel'][0]['tgl_aktif']);
+            $("#modal-update #tgl_akhir").val(iku['panel'][0]['tgl_akhir']);
+            $("#modal-update #lama_ssl").val(iku['panel'][0]['lama_ssl']);
+            $("#modal-update #keterangan").val(iku['panel'][0]['keterangan']);
             if(cek == 'bb'){
-              $("#form-update-whm #bb1").prop("checked",true);
+              $("#modal-update #bb1").prop("checked",true);
             }else if(cek == 'rr'){
-              $("#form-update-whm #rr1").prop("checked",true);
+              $("#modal-update #rr1").prop("checked",true);
             }else if(cek == 'rb'){
-              $("#form-update-whm #rb1").prop("checked",true);
+              $("#modal-update #rb1").prop("checked",true);
             } 
-            $('#form-update-whm #keterangan').val(data.keterangan);
         })
     });
   });
 </script>
 <script type="text/javascript">
   $(document).ready(function(){
-    $('#form-update-whm').on('click', '#simpanEdit', function(e){
+    $('#modal-update').on('click', '#simpanEdit', function(e){
           e.preventDefault();
           var nid = $('#form-update-whm #id').val();
           dataForm = $('#form-update-whm').serialize() + "&_token={{ csrf_token() }}";
-        //   alert(dataForm);    
+          alert(dataForm);    
           $.ajax({
               type: 'PUT',
               url: "{{ route('whm.update', ':id') }}".replace(':id', nid),
@@ -532,14 +722,12 @@
                         alert(response.pesan);
                         window.location.href = "{{ route('whm.index') }}";
                     } else {
-                        // alert(response.pesan);
                         alert('berhasil, tapi tidak tersimpan');
                     }
               },
               error: function(response) {
                     if(response.status == 500) {
-                        // alert(response.pesan);
-                        alert('GAGAL, dan tidak tersimpan');
+                        alert('GAGAL dan tidak tersimpan');
                     } else {
                         alert('Terjadi kesalahan! Cek Ulang Data, Silakan coba lagi.');
                     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Domain;
 use App\Models\TbWhm;
 use Illuminate\Http\Request;
 use DB;
@@ -15,8 +16,8 @@ class WhmController extends Controller
      */
     public function index()
     {
-        $title      = 'Pemeliharaan';
-        $subtitle   = 'Data WHM';
+        $title      = 'Data Nominatif';
+        $subtitle   = 'Web Host Manager';
         $datawhm    = TbWhm::all();
         $datarak    = Rakserver::all();
         $panel       = DB::table('tb_whms')
@@ -27,7 +28,7 @@ class WhmController extends Controller
             return view('admin.whm.index', compact('title','subtitle', 'datawhm', 'datarak', 'panel'));
         } else {
             $panel= '';
-            return view('admin.whm.index', compact('title','subtitle', 'datawhm', 'datarak', 'alat'));
+            return view('admin.whm.index', compact('title','subtitle', 'datawhm', 'datarak', 'panel'));
         }
    
     }
@@ -56,6 +57,7 @@ class WhmController extends Controller
             'lama_ssl'  => 'required',
             'keterangan'=> 'nullable'
         ]);
+        
         $validatedData['user_id'] = Auth::user()->id;
         $ipwhm = $request->ip_address;
         $cek = TbWhm::where(['ip_address' => $ipwhm])->first();
@@ -88,8 +90,16 @@ class WhmController extends Controller
      */
     public function show(string $id)
     {
-        $panel = TbWhm::find($id);
-        return response()->json( $panel);
+        $panel    = DB::table('tb_whms')
+                    ->leftJoin('rakservers', 'tb_whms.kodeRak', '=', 'rakservers.kodeRak')
+                    ->leftJoin('domains', 'tb_whms.id', '=', 'domains.id_whm')
+                    ->where('tb_whms.id','=',$id)
+                    ->select('tb_whms.*', 'rakservers.namaRak')
+                    ->get();
+
+        $statusx   = DB::select('SELECT COUNT(CASE WHEN status = "E" THEN 1 ELSE NULL END) AS Eror, COUNT(CASE WHEN status = "R" THEN 1 ELSE NULL END) AS Run, COUNT(CASE WHEN status = "M" THEN 1 ELSE NULL END) AS Main, COUNT(CASE WHEN status = "S" THEN 1 ELSE NULL END) AS Suspen FROM domains WHERE id_whm = ?', [$id]);
+        
+        return response()->json(['statusx' => $statusx, 'panel' => $panel]);
     }
 
     /**
@@ -103,7 +113,7 @@ class WhmController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
         $valData = $request->validate([
             'ip_address'=> 'required|ip',
@@ -111,11 +121,12 @@ class WhmController extends Controller
             'kodeRak'   => 'required',
             'kapasitas' => 'required',
             'kondisi'   => 'required',
-            'tgl_aktif' => 'required|date',
-            'tgl_akhir' => 'required|date',
+            'tgl_aktif' => 'nullable|date',
+            'tgl_akhir' => 'nullable|date',
             'lama_ssl'  => 'required',
             'keterangan'=> 'nullable'
         ]);
+        // dd($valData);
         $valData['user_id'] = Auth::user()->id;
         $simpan = TbWhm::where('id', $request->id)->update([
                 'ip_address'=> $request->ip_address,
@@ -132,12 +143,12 @@ class WhmController extends Controller
         if($simpan){
             return response()->json([
                 'status' => 200, 
-                'pesan' => 'Nomor '.$request->nama_whm.' berhasil di Update'
+                'pesan' => 'Nama '.$request->nama_whm.' berhasil di Update'
             ]);
         } else {
             return response()->json([
                 'status' => 500, 
-                'pesan' => 'Nomor  GAGAL di Update'
+                'pesan' => 'Nama '.$request->nama_whm.' GAGAL di Update'
             ]);
         } 
     }

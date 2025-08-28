@@ -2,27 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tbkotama;
+use App\Models\Tbsatminkal;
 use Illuminate\Http\Request;
-use App\Models\Rakserver;
 
 class DropDownController extends Controller
 {
     public function index()
     {
-        // $data['rakservers'] = Rakserver::get(["namaRak", "kodeRak"]);
-        $datarak    = Rakserver::all();
-        return view('admin.produk.index', compact('datarak'));
+        $data['kotama'] = Tbkotama::get(["ur_ktm", "kd_ktm"]);
+        return view('dropdown', $data);
     }
 
-    // /**
-    //  * Write code on Method
-    //  *
-    //  * @return response()
-    //  */
-    // public function fetchRak(Request $request)
-    // {
-    //     $data['rakservers'] = Rakserver::where("kodeRak", $request->kodeRak)->get(["namaRak", "kodeRak"]);  
-
-    //     return response()->json($data);
-    // }
+    /**
+     * Write code on Method
+     */
+     public function fetchSatuan(Request $request)
+     { 
+         $data['satuan'] = Tbsatminkal::where("kd_ktm", $request->kd_ktm) ->get(["ur_smkl", "kd_smkl"]);   
+         return response()->json($data); 
+     }
 }

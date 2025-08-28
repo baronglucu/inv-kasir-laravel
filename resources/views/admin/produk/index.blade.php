@@ -35,7 +35,7 @@
       <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ $title }}</h3>
+                <h3 class="card-title">{{ $subtitle }}</h3>
                 <button type="button" class="btn btn-sm btn-primary float-sm-right" data-toggle="modal" data-target="#modal-tambah"><i class="fa fa-plus"></i> Tambah </button>
             </div>
             <div class="card-body">
@@ -63,7 +63,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->serialNumber }}</td>
                                 <td>{{ $item->namaProduk }}</td>
-                                <td>{{ $item->tgl_pengadaan }}</td>
+                                <td>{{ date('d-m-Y', strtotime( $item->tgl_pengadaan )) }}</td>
                                 <td>{{ $item->namaRak }}</td>
                                 <td style="align-content: center">
                                   @if ($item->kondisi == 'bb')
@@ -79,19 +79,14 @@
                                 <td>{{ $item->deskripsi }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-primary" tooltip="Show" id="showDetail" data-id_produk="{{ $item->id }}"><i class="fas fa-eye"></i></button>
+                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('produk.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
                                     &nbsp;
-                                    <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('produk.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
+                                    <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('produk.edit', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;
-                                    {{-- <form class="delete" action="{{ route('produk.destroy',$item->id) }}" method="POST">
-                                      <input type="hidden" name="_method" value="DELETE">
-                                      {{ csrf_field() }}
-                                      <button class='btn btn-sm btn-danger' type="submit" name="remove_levels" value="delete"><i class="fas fa-trash" value="Hapus Item"></i></button>
-                                    </form> --}}
                                     <form id="delete-form-{{ $item->id }}" action="{{ route('produk.destroy', $item->id) }}" method="POST">
                                       @csrf
                                       @method('DELETE')
-                                      <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})">Hapus</button>
+                                      <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})"><i class="fas fa-trash" value="Hapus Item"></i></button>
                                     </form>
                                   </div>
                                 </td>
@@ -267,7 +262,7 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-</div>
+
 
 <div class="modal fade" id="confirm" tabindex="-1" role="dialog" >
   <div class="modal-dialog">
@@ -288,6 +283,83 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detail Data Produk</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Detail Data</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="row mt-1">
+                      <label for="" class="col-md-4">Serial Number</label>
+                      <input type="text" class="form-control col-md-7" id="serialNumber" name="serialNumber" value="" disabled>
+                    </div>
+                    <div class="row mt-1">  
+                      <label for="" class="col-md-4">Nama Produk</label>
+                      <input type="text" class="form-control col-md-7" id="namaProduk" name="namaProduk" value="" disabled>
+                    </div>
+                    <div class="row mt-1">  
+                      <label for="" class="col-md-4">Posisi Rak</label>
+                      <input type="text" class="form-control col-md-7" id="namaRak" name="namaRak" value="" disabled>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="row mt-1">  
+                      <label for="" class="col-md-4">Kondisi</label>
+                      <input type="text" class="form-control col-md-7" id="kondisi" name="kondisi" value="" disabled>
+                    </div>
+                    <div class="row mt-1"> 
+                      <label for="" class="col-md-4">Tanggal Pengadaan</label>
+                      <input type="text" class="form-control col-md-7" id="tgl_pengadaan" name="tgl_pengadaan" value="" disabled>
+                    </div>
+                    <div class="row mt-1"> 
+                      <label for="" class="col-md-4">Deskripsi</label>
+                      {{-- <input type="text" class="form-control col-md-7" id="deskripsi" name="deskripsi" value="" disabled> --}}
+                      <textarea class="form-control col-md-7" id="deskripsi" name="deskripsi" rows="3" disabled></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Riwayat Data</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <label for="">Lisensi Produk</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+        </div>
+      </div>
+    <!-- /.modal-content -->
+    </div>
+  <!-- /.modal-dialog -->
+  </div>
+</div>
+<!-- /.modal -->
 
 @endsection  
 
@@ -358,7 +430,28 @@
 
     $(document).on('click', '#showDetail', function(){
       let id_produk = $(this).data('id_produk');
-      alert(id_produk);
+      var editURL = $(this).data('url');
+        $.get(editURL, function(data){
+            // console.log(data);
+            var cek = data[0]['kondisi'];
+            const tgl = data[0]['tgl_pengadaan'];
+            var options = { year: "numeric", month: "numeric", day: "numeric" };
+            const formattgl = new Date(tgl).toLocaleDateString('es-CL', options);  
+            $('#modal-detail').modal('show');
+            $('#modal-detail #serialNumber').val(data[0]['serialNumber']);
+            $('#modal-detail #namaProduk').val(data[0]['namaProduk']);
+            $("#modal-detail #namaRak").val(data[0]['namaRak']);
+            $("#modal-detail #tgl_pengadaan").val(formattgl);
+            $("#modal-detail #deskripsi").val(data[0]['deskripsi']);
+            if(cek == 'bb'){
+              $("#modal-detail #kondisi").val("Baik");
+            }else if(cek == 'rr'){
+              $("#modal-detail #kondisi").val("Rusak Ringan");
+            }else if(cek == 'rb'){
+              $("#modal-detail #kondisi").val("Rusak Berat");
+            } 
+        })      
+
     });
 
 </script>

@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rakservers', function (Blueprint $table) {
-            $table->string('kodeRak')->primary();
+            $table->id();
+            $table->string('kodeRak');
             $table->string('namaRak');
+            $table->string('model');
+            $table->string('kdjenis');
+            $table->integer('kapasitas');
             $table->string('keterangan');
             $table->timestamps();
         });

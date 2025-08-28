@@ -58,13 +58,7 @@
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Produk</p>
                 </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Riwayat Lisensi</p>
-                </a>
-              </li>              
+              </li>            
               <li class="nav-item">
                 <a href="{{ route('whm.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -78,22 +72,28 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('server.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Server</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('domain.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Domain</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Data e-Mail Dinas</p>
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-tags"></i>
               <p>
                 Pelayanan
                 <i class="fas fa-angle-left right"></i>
@@ -102,7 +102,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('pengaduan.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Pengaduan</p>
                 </a>
@@ -124,21 +124,15 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{ route('produk.logproduk') }}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Log Produk</p>
-                </a>
-              </li>
+            <ul class="nav nav-treeview">              
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Data Lisensi</p>
+                  <p>Data Lisensi Produk</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('rakserver.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Rak Server</p>
                 </a>
@@ -152,6 +146,35 @@
             </ul>
           </li>
           
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-cogs"></i>
+              <p>
+                Utility
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('produk.logproduk') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Log Produk</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('iptest.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Check IP</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tracer</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

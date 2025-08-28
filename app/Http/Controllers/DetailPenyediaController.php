@@ -13,8 +13,8 @@ class DetailPenyediaController extends Controller
      */
     public function index()
     {
-        $title      = 'Mitra';
-        $subtitle   = 'Data Mitra';
+        $title      = 'Data Nominatif';
+        $subtitle   = 'Mitra';
         $datamitra  = DetailPenyedia::all();
         return view('admin.mitra.index', compact('title','subtitle', 'datamitra'));
     }

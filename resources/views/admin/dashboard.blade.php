@@ -8,12 +8,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Dashboard v2</h1>
+            <h1 class="m-0">DC Dashboard</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v2</li>
+              <li class="breadcrumb-item"><a href="#">Beranda</a></li>
+              <li class="breadcrumb-item active">Data Center Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,13 +28,13 @@
         <div class="row">
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-comments"></i></span>
+              
               <div class="info-box-content">
-                <span class="info-box-text">CPU Traffic</span>
+                <span class="info-box-text">Pengaduan</span>
                 <span class="info-box-number">
                   10
-                  <small>%</small>
+                  <small> kasus</small>
                 </span>
               </div>
               <!-- /.info-box-content -->
@@ -44,11 +44,14 @@
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-landmark"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Likes</span>
-                <span class="info-box-number">41,410</span>
+                <span class="info-box-text">Kapasitas WH</span>
+                <span class="info-box-number">
+                  82
+                  <small>%</small>
+                </span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -61,10 +64,10 @@
 
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-globe"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Sales</span>
+                <span class="info-box-text">Website Satuan</span>
                 <span class="info-box-number">760</span>
               </div>
               <!-- /.info-box-content -->
@@ -74,11 +77,11 @@
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-reguler fa-envelope"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">New Members</span>
-                <span class="info-box-number">2,000</span>
+                <span class="info-box-text">e-Mail Dinas</span>
+                <span class="info-box-number">2.000</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -92,7 +95,7 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h5 class="card-title">Monthly Recap Report</h5>
+                <h5 class="card-title">Laporan Rekapitulasi Serangan</h5>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -251,7 +254,7 @@
                       <div class="map"></div>
                     </div>
                   </div>
-                  <div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
+                  {{-- <div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
                     <div class="description-block mb-4">
                       <div class="sparkbar pad" data-color="#fff">90,70,90,70,75,80,70</div>
                       <h5 class="description-header">8390</h5>
@@ -270,7 +273,7 @@
                       <span class="description-text">Organic</span>
                     </div>
                     <!-- /.description-block -->
-                  </div><!-- /.card-pane-right -->
+                  </div><!-- /.card-pane-right --> --}}
                 </div><!-- /.d-md-flex -->
               </div>
               <!-- /.card-body -->

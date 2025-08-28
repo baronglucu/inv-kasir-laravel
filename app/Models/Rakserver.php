@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Rakserver extends Model
 {
     use HasFactory;
-    protected $fillable = ['kodeRak', 'namaRak', 'keterangan'];
+    protected $fillable = ['kodeRak', 'namaRak', 'model', 'kdjenis', 'kapasitas', 'keterangan'];
 }

@@ -1,15 +1,15 @@
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
-  </aside>
+</aside>
   <!-- /.control-sidebar -->
 
   <!-- Main Footer -->
 <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>Copyright &copy; 2025 <a href="https://infolahta-tniad.mil.id/">Disinfolahta TNI AD</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
+      <b>Version</b> Siji
     </div>
   </footer>
 </div>
@@ -33,10 +33,17 @@
 <script src="{{ asset('')}}plugins/jquery-mapael/maps/usa_states.min.js"></script>
 <!-- ChartJS -->
 <script src="{{ asset('')}}plugins/chart.js/Chart.min.js"></script>
-{{-- 
-<!-- AdminLTE for demo purposes -->
-<script src="{{ asset('')}}dist/js/demo.js"></script> --}}
+<script src="{{ asset('')}}dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('')}}dist/js/pages/dashboard2.js"></script>
+<!-- bootstrap color picker -->
+<script src="{{ asset('')}}plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{{ asset('')}}plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Bootstrap Switch -->
+<script src="{{ asset('')}}plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<!-- InputMask -->
+<script src="{{ asset('')}}plugins/moment/moment.min.js"></script>
+<script src="{{ asset('')}}plugins/inputmask/jquery.inputmask.min.js"></script>
 </body>
 </html>

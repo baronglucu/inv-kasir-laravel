@@ -16,8 +16,8 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $title      = 'Produk';
-        $subtitle   = 'Index';
+        $title      = 'Data Nominatif';
+        $subtitle   = 'Produk';
         $produks    = Produk::all();
         $datarak    = Rakserver::all();
         $alat       = DB::table('produks')
@@ -88,7 +88,15 @@ class ProdukController extends Controller
      */
     public function show($id)
     {
-        $produks = Produk::find($id);
+        // $produks = Produk::find($id);
+        // return response()->json( $produks);
+        
+        $produks    = DB::table('produks')
+                    ->leftJoin('rakservers', 'produks.kodeRak', '=', 'rakservers.kodeRak')
+                    ->where('produks.id','=',$id)
+                    ->select('produks.*', 'rakservers.namaRak')                    
+                    ->get();
+        // dd($produks);
         return response()->json( $produks);
     }
 
@@ -97,10 +105,12 @@ class ProdukController extends Controller
      */
     public function edit($id)
     {
-        $title      = 'Produk';
-        $subtitle   = 'Edit';
-        $produks    = Produk::find($id);
-        return view('admin.produk.edit', compact('title','subtitle', 'produks'));
+        $produks = Produk::find($id);
+        return response()->json( $produks);
+        // $title      = 'Produk';
+        // $subtitle   = 'Edit';
+        // $produks    = Produk::find($id);
+        // return view('admin.produk.edit', compact('title','subtitle', 'produks'));
     }
 
     /**
@@ -151,10 +161,6 @@ class ProdukController extends Controller
 
     public function edit_modal($id) 
     {
-        // $title      = 'Produk';
-        // $subtitle   = 'Edit';
-        // $datas      = Produk::find($id);
-        // return view('admin.produk.index', compact('title','subtitle', 'datas'));
         $produks = Produk::find($id);
         return response()->json( $produks);
     }
@@ -172,45 +178,8 @@ class ProdukController extends Controller
         return view('admin.produk.logproduk', compact('title','subtitle', 'logproduk'));
     }
     
-    // public function rakserver()
-    // {
-    //     $datarak    = Rakserver::all();
-    //     return view('admin.produk.index', compact('datarak'));
-    // }
-
-    // public function simpan(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'serial'  => 'required',
-    //         'nama'    => 'required',
-    //         'koder'   => 'required',
-    //         'deskrip' => 'required',
-    //         'tgl_ada' => 'required|date'
-    //     ]);
-
-    //     $sn = $request->serial;
-    //     $cek = Produk::where(['serialNumber' => $sn])->first();
-    //     if ($cek) {
-    //         $validatedData['tgl_pengadaan'] = date('Y-m-d', strtotime(str_replace('-', replace: '/', subject: $request->tgl_pengadaan)));
-
-    //         $simpan = Produk::update($validatedData);
-    //         if($simpan){
-    //             return response()->json([
-    //                 'status' => 200, 
-    //                 'message' => 'Produk berhasil ditambahkan'
-    //             ]);
-    //         } else {
-    //             return response()->json([
-    //                 'status' => 500, 
-    //                 'message' => 'Produk gagal ditambahkan'
-    //             ]);
-    //         }
-    //     } else {
-    //         return response()->json([
-    //             'status' => 500, 
-    //             'message' => 'Produk gagal ditambahkan, karena SERIAL NUMBER sudah ada'
-    //         ]);
-    //     }
-    
-    // }
+    public function getProduk($id){
+        $produk = Produk::where('id', $id)->get();
+        return response()->json($produk);
+    }
 }
