@@ -86,7 +86,7 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Data e-Mail Dinas</p>
+                  <p><code>Data e-Mail Dinas</code></p>
                 </a>
               </li>
             </ul>
@@ -108,7 +108,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('permohonan.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Permohonan</p>
                 </a>
@@ -128,7 +128,7 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Data Lisensi Produk</p>
+                  <p><code>Data Lisensi Produk</code></p>
                 </a>
               </li>
               <li class="nav-item">
@@ -140,7 +140,7 @@
               <li class="nav-item">
                 <a href="pages/forms/validation.html" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Norek Mitra</p>
+                  <p><code>Data Mitra</code></p>
                 </a>
               </li>
             </ul>
@@ -162,7 +162,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('iptest.index') }}" class="nav-link">
+                <a href="{{ route('ipcheck.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Check IP</p>
                 </a>
@@ -170,7 +170,7 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Tracer</p>
+                  <p><code>Tracer</code></p>
                 </a>
               </li>
             </ul>

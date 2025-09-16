@@ -4,19 +4,21 @@ use App\Http\Controllers\DataServerController;
 use App\Http\Controllers\DetailPenyediaController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\IptestController;
 use App\Http\Controllers\RakserverController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\WhmController;
+use App\Http\Controllers\PermohonanController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DropDownController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IpCheckController;
 
 Route::get('/', [UserController::class,'login'])->name('login');
 Route::get('/register',[UserController::class,'register'])->name('register');
 Route::post('/register',[UserController::class,'registerStore'])->name('register.store');
 Route::post('/login',[UserController::class,'loginCheck'])->name('login.check');
 Route::resource('users',UserController::class);
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 Route::get('/dashboard', function() {
     return view('admin.dashboard');
@@ -65,16 +67,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('pengaduan', PengaduanController::class);    
 });
 
-// Route::prefix('ip-check')->group(function () {
-// Route::group(['middleware' => ['auth']], function () {
-//     Route::get('/ip-check', [IpcheckController::class, 'index'])->name('ip-check.index');
-//     Route::post('/ip-check/store', [IpcheckController::class, 'store'])->name('ip-check.store');
-//     Route::get('/ip-check/{id}', [IpcheckController::class, 'show'])->name('ip-check.show');
-// });
-
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/iptest', [IptestController::class, 'index'])->name('iptest.index');
+    Route::get('/permohonan', [PermohonanController::class, 'index'])->name('permohonan.index');
+    Route::post('/permohonan/store', [PermohonanController::class, 'store'])->name('permohonan.store');
+    Route::post('/permohonan/{id}',[PermohonanController::class,'index'])->name('permohonan.create');
+    Route::post('/app/uploads', [PermohonanController::class, 'handleFileUpload']);
+    Route::resource('permohonan', PermohonanController::class);    
 });
 
-
-
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/ipcheck', [IpCheckController::class, 'index'])->name('ipcheck.index');
+    Route::post('/ipcheck/check-ip', [IpCheckController::class, 'checkIp'])->name('ipcheck.checkIp');
+});
