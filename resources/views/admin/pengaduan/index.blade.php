@@ -110,10 +110,10 @@
                                   </div> --}}
                                 </td>
                                 <td>
-                                  @if ($item->klasifikasi == 'U')
+                                  @if ($item->klasifikasi == 'u')
                                     <span class="badge badge-success"> Urgent </span>
                                   @endif
-                                  @if ($item->klasifikasi == 'P')
+                                  @if ($item->klasifikasi == 'i')
                                     <span class="badge badge-warning"> Important </span>
                                   @endif
                                 </td>
@@ -121,10 +121,12 @@
                                 <td>{{ $item->no_surat }}</td>
                                 <td>{{ date('d-m-Y', strtotime( $item->tgl_surat )) }}</td>
                                 <td align="center">
-                                  @if ($item->file_surat != '')
-                                  <button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/' . $item->file_surat) }}">
-                                    <i class="fas fa-file"></i>
-                                  </button>
+                                   @if ($item->file_surat)
+                                    <button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/'.$item->file_surat) }}">
+                                      <i class="fas fa-file"></i>
+                                    </button>
+                                  @else
+                                    <span class="text-muted">Tidak ada file</span>
                                   @endif
                                  </td>
                                 <td class="text-right">
@@ -488,7 +490,7 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-</div>
+  <!-- /.modal-hapus -->
 
 <div class="modal fade" id="confirm" tabindex="-1" role="dialog" >
   <div class="modal-dialog">
@@ -526,106 +528,107 @@
             <div class="card-header">
               <h3 class="card-title">Detail Data</h3>
             </div>
-            {{-- <div class="card-body">
+            <div class="card-body">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
                     <div class="row mt-1">
-                      <label for="" class="col-md-4">Alamat IP</label>
-                      <input type="text" class="form-control col-md-7" id="ip_address" name="ip_address" value="" disabled>
+                      <label for="" class="col-md-4">No. Pengaduan</label>
+                      <input type="text" class="form-control col-md-7" id="no_lapor" name="no_lapor" value="" disabled>
                     </div>
                     <div class="row mt-1">  
-                      <label for="" class="col-md-4">Nama WHM</label>
-                      <input type="text" class="form-control col-md-7" id="nama_whm" name="nama_whm" value="" disabled>
+                      <label for="" class="col-md-4">Dari Kotama</label>
+                      <input type="text" class="form-control col-md-7" id="kotama" name="kotama" value="" disabled>
                     </div>
                     <div class="row mt-1">  
-                      <label for="" class="col-md-4">Posisi Rak</label>
-                      <input type="text" class="form-control col-md-7" id="namaRak" name="namaRak" value="" disabled>
+                      <label for="" class="col-md-4">Dari Satuan</label>
+                      <input type="text" class="form-control col-md-7" id="satuan" name="satuan" value="" disabled>
                     </div>
-                    <div class="row mt-1">  
-                      <label for="" class="col-md-4">Lama Aktif SSL</label>
-                        <input type="text" class="form-control col-md-2" id="lama_ssl" name="lama_ssl" value="" disabled>
-                        <div class="input-group-append">
-                          <span class="input-group-text"> Tahun </span>
-                        </div>
+                    <div class="row mt-1">                    
+                      <label for="nm_domain" class="col-md-4">Nama Domain</label>
+                      <input type="text" class="form-control col-md-7" id="nm_domain" name="nm_domain" value="" disabled> 
                     </div>
-                    <div class="row mt-1">  
-                      <label for="" class="col-md-4">Kondisi</label>
-                      <input type="text" class="form-control col-md-4" id="kondisi" name="kondisi" value="" disabled>
+                    <div class="row mt-1">                               
+                      <label for="masalah" class="col-md-4">Masalah</label>
+                      <textarea class="form-control col-md-7" id="masalah" name="masalah" rows="3" placeholder="Kendala yang dihadapi" disabled></textarea>
+                    </div>
+                    <div class="row mt-1">
+                      <label for="solusi" class="col-md-4">Penanganan</label>
+                      <textarea class="form-control col-md-7" id="solusi" name="solusi" rows="3" disabled></textarea>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-group">                    
-                    <div class="row mt-1">  
-                      <label for="" class="col-md-4">Kapasitas</label>
-                      <input type="text" class="form-control col-md-4" id="kapasitas" name="kapasitas" value="" disabled>
-                    </div>                    
-                    <div class="row mt-1"> 
-                      <label for="" class="col-md-4">Tanggal Aktif</label>
-                      <input type="text" class="form-control col-md-4" id="tgl_aktif" name="tgl_aktif" value="" disabled>
+                  <div class="form-group"> 
+                    <div class="row mt-1">                   
+                      <label aria-labelledby="status" class="col-md-4">Status</label>
+                      <div class="card card-light card-outline col-md-12">
+                        <div class="card-body">
+                          <div class="custom-control custom-radio d-inline col-md-4">
+                            <input class="custom-control-input custom-control-input-danger" type="radio" id="s1" name="status" value="1">
+                            <label aria-labelledby="1" class="custom-control-label col-md-2">Suspend</label>
+                          </div>
+                          <div class="custom-control custom-radio d-inline col-md-4">
+                            <input class="custom-control-input custom-control-input-warning" type="radio" id="s2" name="status" value="2">
+                            <label aria-labelledby="2" class="custom-control-label col-md-2">Pending</label>
+                          </div>
+                          <div class="custom-control custom-radio d-inline col-md-4">
+                            <input class="custom-control-input custom-control-input-success" type="radio" id="s3" value="3" name="status">
+                            <label aria-labelledby="3" class="custom-control-label col-md-2">Proses</label>
+                          </div>
+                          <div class="custom-control custom-radio d-inline col-md-4">
+                            <input class="custom-control-input custom-control-input-info" type="radio" id="s4" value="4" name="status">
+                            <label aria-labelledby="4" class="custom-control-label col-md-2">Selesai</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-3 align-items-center mt-1">
+                        
+                          <label for="klasifikasi" class="col-md-2">Klasifikasi</label>
+                          <input type="text" class="form-control col-md-4" id="klasifikasi" name="klasifikasi" value="" disabled> 
+                          <label for="melalui" class="col-md-2">Melalui</label>
+                          <input type="text" class="form-control col-md-4" id="melalui" name="melalui" value="" disabled>  
+                                                       
+                        </div> 
+                      <div class="row g-3 align-items-center mt-1">
+                          
+                          <label for="" class="col-md-2">No. Surat</label>
+                          <input type="text" class="form-control col-md-4" id="no_surat" name="no_surat" value="" disabled>
+                          <label for="" class="col-md-2">Tgl Surat</label>
+                          <input type="text" class="form-control col-md-4" id="tgl_surat" name="tgl_surat" value="" disabled>
+                        
+                      </div>
+                      <div class="row g-2 col-md-12 align-items-center mt-1">
+                        <label class="col-md-2">File Surat</label>
+                        <input type="text" class="form-control col-md-10" id="file_surat" name="file_surat" disabled>
+                      </div>
+                    <div class="card card-light card-outline mb-1 mt-2 col-md-12">
+                        <div class="card-body">
+                          <div class="row mt-1">
+                            <label for="" class="col-md-4">Posisi WHM</label>
+                            <input type="text" class="form-control col-md-7" id="nama_whm" name="nama_whm" value="" disabled>
+                          </div>
+                          <div class="row mt-1">
+                            <label for="" class="col-md-4">IP Address</label>
+                            <input type="text" class="form-control col-md-7" id="ip_address" name="ip_address" value="" disabled>
+                          </div>
+                          <div class="row mt-1">
+                            <label for="" class="col-md-4">Nama Rak</label>
+                            <input type="text" class="form-control col-md-7" id="namaRak" name="namaRak" value="" disabled>
+                          </div>
+                        </div>
                     </div>
-                    <div class="row mt-1"> 
-                      <label for="" class="col-md-4">Tanggal Akhir</label>
-                      <input type="text" class="form-control col-md-4" id="tgl_akhir" name="tgl_akhir" value="" disabled>
-                    </div>
-                    <div class="row mt-1">
-                      <label for="" class="col-md-4">Keterangan</label>
-                      <textarea class="form-control col-md-7" id="keterangan" name="keterangan" value="" rows="3" disabled></textarea>
-                    </div>
                   </div>
                 </div>
               </div>
-            </div> --}}
-          </div>
-        </div>
-
-        {{-- <div class="card card-info">
-          <div class="card-header">
-            <h3 class="card-title">Rekapitulasi Status Domain</h3>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <div class="row mt-1">
-                    <label for="" class="col-md-6 text-danger text-right">Error :</label>
-                    <input type="text" class="form-control col-md-4" id="eror" name="eror" value="" disabled>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <div class="row mt-1">
-                    <label for="" class="col-md-6 text-success text-right">Running :</label>
-                    <input type="text" class="form-control col-md-4" id="run" name="run" value="" disabled>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <div class="row mt-1">
-                    <label for="" class="col-md-6 text-warning text-right">Maintenance :</label>
-                    <input type="text" class="form-control col-md-4" id="main" name="main" value="" disabled>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <div class="row mt-1">
-                    <label for="" class="col-md-6 text-muted text-right">Suspend :</label>
-                    <input type="text" class="form-control col-md-4" id="suspen" name="suspen" value="" disabled>
-                  </div>
-                </div>
-              </div>
-              
             </div>
           </div>
-        </div> --}}
+        </div>
         <div class="modal-footer justify-content-between">
           {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
         </div>
+      </div>
       </div>
     <!-- /.modal-content -->
     </div>
@@ -691,40 +694,43 @@
     // Example: Attach the function to a button click
   $(document).on('click', '.btn-view-file', function () {
       const fileUrl = $(this).data('file-url'); // Get the file URL from the button's data attribute
-      viewFile(fileUrl);
+      if (fileUrl) {
+          viewFile(fileUrl);
+      } else {
+          alert('No file URL provided.');
+      } 
+      // viewFile(fileUrl);
   });
 
-    $('#modal-tambah .select2').each(function() {  
-        var $p = $(this).parent(); 
-        $(this).select2({  
-            dropdownParent: $p  
-        });  
-    });
+  $('#modal-tambah .select2').each(function() {  
+    var $p = $(this).parent(); 
+    $(this).select2({  
+      dropdownParent: $p  
+    });  
+  });
 
-    function viewFile(fileUrl) {
-      const fileExtension = fileUrl.split('.').pop().toLowerCase();
-      if (fileExtension === 'pdf') { 
-          $('#fileViewer').attr('src', fileUrl);
-          $('#modal-dokumen').modal('show');
-          var span = document.getElementById('namafile');
-          if ('textContent' in span) {
-              span.textContent = fileUrl;
-          } else {
-              span.innerText = fileUrl;
-          }
+  function viewFile(fileUrl) {
+    const fileExtension = fileUrl.split('.').pop().toLowerCase();
+    if (fileExtension === 'pdf') { 
+      $('#fileViewer').attr('src', fileUrl);
+      $('#modal-dokumen').modal('show');
+      var span = document.getElementById('namafile');
+      if ('textContent' in span) {
+        span.textContent = fileUrl;
       } else {
-          alert('File type not supported for preview. Downloading file...');
-          window.open(fileUrl, '_blank');
+        span.innerText = fileUrl;
       }
+    } else {
+      alert('File type not supported for preview. Downloading file...');
+      window.open(fileUrl, '_blank');
     }
-    
+  }    
         // Tutup modal ketika diklik di luar
-        $('#viewModal').on('click', function(e) {
-            if (e.target === this) {
-                $(this).modal('hide');
-            }
-        });
-    
+  $('#viewModal').on('click', function(e) {
+    if (e.target === this) {
+      $(this).modal('hide');
+    }
+  });    
 </script>
 <script>
   function confirmDelete(id) {
@@ -752,7 +758,7 @@
           text: '{{ session('swal')['text'] }}',
           confirmButtonText: 'OK'
       }).then(() => {
-          window.location.href = "{{ route('pengaduan.index') }}whm"; // Redirect setelah OK ditekan
+          window.location.href = "{{ route('pengaduan.index') }}"; // Redirect setelah OK ditekan
       });
   @endif
 </script>
@@ -787,38 +793,61 @@
       let idwhm = $(this).data('id');
       var editURL = $(this).data('url');
         $.get(editURL, function(data){
-            // console.log(data);
-            // const ipa = JSON.stringify(data);
-            // const iku = JSON.parse(ipa);
+            console.log(data);
+            var sta = data[0].status;
+            const tgllap = data[0].tgl_laporan;
+            const tglakt = data[0].tgl_aktif;
+            var options = { year: "numeric", month: "numeric", day: "numeric" };
+            const ftglap = new Date(tgllap).toLocaleDateString('es-CL', options); 
+            const ftglak = new Date(tglakt).toLocaleDateString('es-CL', options);
+            // alert(sta);
+            var kla = data[0].klasifikasi;
+            var mel = data[0].melalui;
+            $('#modal-detail').modal('show');
+            $('#modal-detail #ip_address').val(data[0].ip_address);
+            $('#modal-detail #nama_whm').val(data[0].nama_whm);
+            $('#modal-detail #namaRak').val(data[0].namaRak);
 
-            // const tglakt = iku['panel'][0]['tgl_aktif'];
-            // const tglakh = iku['panel'][0]['tgl_akhir'];
-            // var options = { year: "numeric", month: "numeric", day: "numeric" };
-            // const ftglaktif = new Date(tglakt).toLocaleDateString('es-CL', options); 
-            // const ftglakhir = new Date(tglakh).toLocaleDateString('es-CL', options);   
-            // var cek = iku['panel'][0]['kondisi']; 
+            $('#modal-detail #id').val(data[0].id);
+            $('#modal-detail #no_lapor').val(data[0].no_lapor);
+            $('#modal-detail #nama_pelapor').val(data[0].nama_pelapor);
+            $('#modal-detail #tgl_laporan').val(ftglap);
+            $('#modal-detail #kotama').val(data[0].ur_ktm);
+            $('#modal-detail #satuan').val(data[0].ur_smkl);
+            $('#modal-detail #no_telp').val(data[0].no_telp);
+            $('#modal-detail #nm_domain').val(data[0].nama_domain);
+            $('#modal-detail #masalah').val(data[0].masalah);          
+            $('#modal-detail #solusi').val(data[0].solusi);
+            if(sta == '1'){
+              $("#modal-detail #s1").prop("checked",true);
+            }else if(sta == '2'){
+              $("#modal-detail #s2").prop("checked",true);
+            }else if(sta == '3'){
+              $("#modal-detail #s3").prop("checked",true);
+            }else{
+              $("#modal-detail #s4").prop("checked",true);
+            }
             
-            // $('#modal-detail').modal('show');
-            // $('#modal-detail #id').val(iku['panel'][0]['id']);
-            // $('#modal-detail #ip_address').val(iku['panel'][0]['ip_address']);
-            // $("#modal-detail #nama_whm").val(iku['panel'][0]['nama_whm']);
-            // $("#modal-detail #namaRak").val(iku['panel'][0]['namaRak']);
-            // $("#modal-detail #kapasitas").val(iku['panel'][0]['kapasitas']);
-            // $("#modal-detail #tgl_aktif").val(ftglaktif);
-            // $("#modal-detail #tgl_akhir").val(ftglakhir);
-            // $("#modal-detail #lama_ssl").val(iku['panel'][0]['lama_ssl']);
-            // $("#modal-detail #keterangan").val(iku['panel'][0]['keterangan']);
-            // if(cek == 'bb'){
-            //   $("#modal-detail #kondisi").val("Baik");
-            // }else if(cek == 'rr'){
-            //   $("#modal-detail #kondisi").val("Rusak Ringan");
-            // }else if(cek == 'rb'){
-            //   $("#modal-detail #kondisi").val("Rusak Berat");
-            // } 
-            // $('#modal-detail #eror').val(iku['statusx'][0]['Eror']);
-            // $('#modal-detail #run').val(iku['statusx'][0]['Run']);
-            // $('#modal-detail #main').val(iku['statusx'][0]['Main']);
-            // $('#modal-detail #suspen').val(iku['statusx'][0]['Suspen']);
+            if(kla == 'u'){
+              $('#modal-detail #klasifikasi').val('Urgent/Mendesak');
+            }else{
+              $('#modal-detail #klasifikasi').val('Important/Penting');
+            }
+
+            $('#modal-detail #tgl_aktif').val(ftglak);
+
+            if(mel == 'surat'){
+              $('#modal-detail #melalui').val('Surat');
+            }else if(mel == 'chat'){
+              $('#modal-detail #melalui').val('Chatting');
+            }else{
+              $('#modal-detail #melalui').val('Telepon');
+            }            
+            
+            $('#modal-detail #no_surat').val(data[0].no_surat);
+            $('#modal-detail #tgl_surat').val(data[0].tgl_surat);
+            $('#modal-detail #file_surat').val(data[0].file_surat);
+            $('#modal-detail #dataTemp').val(JSON.stringify(data[0]));
         })      
 
     });

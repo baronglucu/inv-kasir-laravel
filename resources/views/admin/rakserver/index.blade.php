@@ -16,11 +16,18 @@
       width: 100% !important;
       z-index: 99999;
     }
-      .select2-container--default .select2-selection--single {
-          padding: 6px 15px;
-          border: 1px solid #a4bbd3;
-          height: 38px;
-      }
+    .select2-container--default .select2-selection--single {
+      padding: 6px 15px;
+      border: 1px solid #a4bbd3;
+      height: 38px;
+    }
+    td.details-control {
+      background: url('{{ asset('images/details_open.png') }}') no-repeat center center;
+      cursor: pointer;
+    }
+    tr.shown td.details-control {
+      background: url('{{ asset('images/details_close.png') }}') no-repeat center center;
+    }
   </style>
 @endsection
 
@@ -63,24 +70,28 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>#</th>
                             <th>Kode Rak</th>
                             <th>Nama Rak</th>
-                            <th>Model Rak</th>
                             <th>Jenis Rak</th>
+                            <th>Model Rak</th>
                             <th>Kapasitas</th>
+                            <th>Jml Perangkat</th>
                             <th>Keterangan</th>  
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($datarak as $item)
-                            <tr>
+                            <tr data-koderak="{{ $item->kodeRak }}">
                                 <td>{{ $loop->iteration }}</td>
+                                <td class="details-control"><i class="fa fa-plus"></i></td>
                                 <td>{{ $item->kodeRak }}</td>
-                                <td>{{ $item->namaRak }}</td>
-                                <td>{{ $item->model }}</td>
+                                <td>{{ $item->namaRak }}</td>                                
                                 <td>{{ $item->namaJenis }}</td>
+                                <td>{{ $item->namaModel }}</td>
                                 <td>{{ $item->kapasitas }}</td>
+                                <td>{{ $item->jml }}</td>
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
@@ -130,12 +141,26 @@
                             <div class="form-group">
                               <div class="row">
                                   <div class="col-md-6">
-                                    <label for="model">Model Rak</label>
-                                    <input type="text" id="model" name="model" class="form-control" placeholder="Closed Rack, Open Rack, Wallmount Rack" required>
+                                    <label for="kdjenis">Jenis Rak</label>
+                                    <select class="form-control select2" style="width: 100%;" id="kdjenis" name="kdjenis" >
+                                        <option value="">-- Pilih Jenis --</option>
+                                        @foreach ($jnsrak as $jenis)
+                                        <option value="{{$jenis->kdjenis}}">
+                                          {{$jenis->namaJenis}}
+                                        </option>
+                                        @endforeach
+                                    </select>
                                   </div>
                                   <div class="col-md-6">
-                                    <label for="kapasitas">Kapasitas</label>
-                                    <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control" required>
+                                    <label for="kdmodel">Model Rak</label>
+                                    <select class="form-control select2" style="width: 100%;" id="kdmodel" name="kdmodel" >
+                                      <option value="">-- Pilih Model --</option>
+                                      @foreach ($modrak as $mrak)
+                                      <option value="{{$mrak->kdmodel}}">
+                                        {{$mrak->namaModel}}
+                                      </option>
+                                      @endforeach
+                                    </select>
                                   </div>
                               </div>
                             </div>
@@ -143,15 +168,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group"> 
-                          <label for="kdjenis">Jenis Rak</label>
-                          <select class="form-control select2" style="width: 100%;" id="kdjenis" name="kdjenis" >
-                              <option value="">-- Pilih Jenis-- --</option>
-                                  @foreach ($jnsrak as $rak)
-                                  <option value="{{$rak->kdjenis}}">
-                                      {{$rak->namaJenis}}
-                                  </option>
-                                  @endforeach
-                              </select>
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label for="kapasitas">Kapasitas</label>
+                                <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control" required>
+                              </div>
+                              <div class="col-md-6">
+
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <div class="form-group">
                             <label for="keterangan">Keterangan</label>
@@ -288,22 +315,133 @@
 <script src="{{ asset('')}}plugins/sweetalert2/sweetalert2.min.js"></script>
 
 <script>
-    $(function () {
+    $(function () {      
       $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "dom": 'Bfrtip',
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>
-<script>
 
-    $('#modal-tambah .select2').each(function() {  
-        var $p = $(this).parent(); 
-        $(this).select2({  
-            dropdownParent: $p  
-        });  
+<script>
+function formatChild(kodeRak) {
+    // Data perangkat dari PHP (Blade ke JS)
+    var perangkat = @json($perangkat);
+
+    var rows = '';
+    if (perangkat[kodeRak]) {
+        perangkat[kodeRak].forEach(function(item, idx) {
+          let statusText = item.status === 'A' ? 'Aktif' : 'Non Aktif';
+            rows += `
+                <tr>
+                    <td>${idx+1}</td>
+                    <td>${item.serialNumber}</td>
+                    <td>${item.merk}</td>
+                    <td>${item.model}</td>
+                    <td>${item.kapasitas}</td>
+                    <td>${item.ip_address}</td>
+                    <td>${item.sistemOperasi}</td>
+                    <td>${statusText}</td>
+                </tr>
+            `;
+        });
+    } else {
+        rows = `<tr><td colspan="8" class="text-center"><code>Tidak ada perangkat</code></td></tr>`;
+    }
+
+    return `
+        <table class="table table-sm table-bordered mb-0">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Serial Number</th>
+                    <th>Merk</th>
+                    <th>Model</th>
+                    <th>Kapasitas</th>
+                    <th>IP Address</th>
+                    <th>Sistem Operasi</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
+}
+
+$(document).ready(function() {
+    if ( $.fn.DataTable.isDataTable('#example1') ) {
+            $('#example1').DataTable().destroy();
+        }
+    var table = $('#example1').DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        dom: 'Bfrtip',
+        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
     });
-    
+
+    $('#example1 tbody').on('click', 'td.details-control', function () {
+        var tr      = $(this).closest('tr');
+        var row     = table.row(tr);
+        var kodeRak = tr.data('koderak');
+        var icon    = $(this).find('i');
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            icon.removeClass('fa-minus').addClass('fa-plus');
+        } else {
+            row.child(formatChild(kodeRak)).show();
+            tr.addClass('shown');
+            icon.removeClass('fa-plus').addClass('fa-minus');
+        }
+    });
+});
+</script>
+<script>
+    $('#modal-tambah').on('shown.bs.modal', function() {  
+        $('#modal-tambah .select2').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#modal-tambah')
+        });
+    });
+
+    $('#modal-update').on('shown.bs.modal', function () {
+        $('#modal-update .select2').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#modal-update')
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#kdjenis').change(function () {
+            var kdjen = $(this).val();
+            if (kdjen) {
+                $.ajax({
+                    url: '/get-model/' + kdjen,
+                    type: "GET",
+                    data: { kdjenis: kdjen },
+                    success: function (data) {
+                        // console.log(data);
+                        $('#kdmodel').empty();
+                        $('#kdmodel').append('<option value="">Pilih Model</option>');
+                        $.each(data, function (key, value) {
+                            $('#kdmodel').append('<option value="' + value.kdmodel + '">' + value.namaModel + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#kdmodel').empty();
+                $('#kdmodel').append('<option value="">Pilih Model</option>');
+            }
+        });
+    });
 </script>
 <script>
   $('button[name="remove_levels"]').on('click', function(e) {

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pings', function (Blueprint $table) {
+        Schema::create('tbmodelraks', function (Blueprint $table) {
             $table->id();
+            $table->string('kdmodel')->unique();
+            $table->string('namaModel');
+            $table->string('deskripsi')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pings');
+        Schema::dropIfExists('tbmodelraks');
     }
 };

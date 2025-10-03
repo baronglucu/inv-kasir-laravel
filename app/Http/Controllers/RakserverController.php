@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Rakserver;
 use App\Models\Tbjenisrak;
+use App\Models\DataPerangkat;
+use App\Models\tbmodelraks;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Attributes\Group;
 
 class RakserverController extends Controller
 {
@@ -19,16 +22,40 @@ class RakserverController extends Controller
         $subtitle   = 'Rak Server';
         // $datarak    = Rakserver::all();
         $jnsrak     = Tbjenisrak::all();
-        $datarak    = DB::table('rakservers')
+        $modrak     = tbmodelraks::all();
+        $dperang    = DataPerangkat::all();
+
+        $perangkat = DB::table('data_perangkats')->get()->groupBy('kodeRak');
+
+        // $datarak    = DB::table('rakservers')
+        //             ->leftJoin('tbjenisraks', 'rakservers.kdjenis', '=', 'tbjenisraks.kdjenis')
+        //             ->leftJoin('tbmodelraks', 'rakservers.kdmodel', '=', 'tbmodelraks.kdmodel')
+        //             ->leftjoin('data_perangkats', 'rakservers.kodeRak', '=', 'data_perangkats.kodeRak')
+        //             ->select('rakservers.*',
+        //             'tbmodelraks.namaModel', 
+        //             'data_perangkats.serialNumber', 
+        //             'data_perangkats.merk', 
+        //             'data_perangkats.model', 
+        //             'data_perangkats.kapasitas as kapasitasPerangkat', 
+        //             'tbjenisraks.namaJenis',
+        //             DB::raw('(SELECT COUNT(*) FROM data_perangkats WHERE data_perangkats.kodeRak = rakservers.kodeRak) as jml'
+        //             ))
+        //             ->get();
+         $datarak    = DB::table('rakservers')
                     ->leftJoin('tbjenisraks', 'rakservers.kdjenis', '=', 'tbjenisraks.kdjenis')
-                    ->select('rakservers.*', 'tbjenisraks.namaJenis')
+                    ->leftJoin('tbmodelraks', 'rakservers.kdmodel', '=', 'tbmodelraks.kdmodel')
+                    ->select('rakservers.*',
+                    'tbmodelraks.namaModel', 
+                    'tbjenisraks.namaJenis',
+                    DB::raw('(SELECT COUNT(*) FROM data_perangkats WHERE data_perangkats.kodeRak = rakservers.kodeRak) as jml'
+                    ))
                     ->get();
 
             if($datarak){
-                return view('admin.rakserver.index', compact('title','subtitle', 'datarak', 'jnsrak'));
+                return view('admin.rakserver.index', compact('title','subtitle', 'datarak', 'jnsrak', 'modrak', 'perangkat'));
             } else {
                 $datarak= '';
-                return view('admin.rakserver.index', compact('title','subtitle', 'datarak', 'jnsrak'));
+                return view('admin.rakserver.index', compact('title','subtitle', 'datarak', 'jnsrak','modrak', 'perangkat'));
             }
     }
 
@@ -77,6 +104,12 @@ class RakserverController extends Controller
                 'message' => 'Rak Server gagal ditambahkan, karena Kode Rak sudah ada'
             ]);
         }
+    }
+
+    public function getModel($kdjenis)
+    {
+        $kdmodel = tbmodelraks::where('kdjenis', $kdjenis)->get();
+        return response()->json($kdmodel);
     }
 
     /**

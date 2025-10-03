@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataServer;
 use App\Models\DataPerangkat;
 use App\Models\DetailPenyedia;
 use App\Models\Domain;
@@ -15,7 +14,7 @@ use DB;
 use Auth;
 use Illuminate\Http\Request;
 
-class DataServerController extends Controller
+class DataPerangkatController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,19 +23,33 @@ class DataServerController extends Controller
     {
         $title      = 'Data Nominatif';
         $subtitle   = 'Perangkat';
-        $servers    = DataServer::all();
-        $perangkat  = DataPerangkat::all();
+        $servers    = DataPerangkat::all();
+        $datarak    = Rakserver::all();
+        $kotama     = Tbkotama::all();
+        $satuan     = Tbsatminkal::all();
+        $aplsisfo   = DataAplSisfo::all();
+        $jenis      = Tbjenis::all();
         $domain     = Domain::all();
-        $alat       = DB::table('data_servers')
-                    ->leftJoin('data_perangkat', 'data_servers.serialNumber', '=', 'data_perangkat.serialNumber')
-                    ->select('data_servers.*', 'data_perangkat.*')
+        $mitra      = DetailPenyedia::all();
+        $alat       = DB::table('data_perangkats')
+                    ->leftJoin('rakservers', 'data_perangkats.kodeRak', '=', 'rakservers.kodeRak')
+                    ->leftJoin('detail_penyedias', 'data_perangkats.id_mitra', '=', 'detail_penyedias.id_mitra')
+                    ->leftJoin('data_apl_sisfos', 'data_perangkats.id_apl', '=', 'data_apl_sisfos.id_apl')
+                    ->leftJoin('tbjenis', 'data_perangkats.kode_jns', '=', 'tbjenis.kode_jns')
+                    ->leftJoin('tbkotamas', 'data_perangkats.kd_ktm', '=', 'tbkotamas.kd_ktm')
+                    ->leftJoin('tbsatminkals', function($join)
+                         {
+                             $join->on('data_perangkats.kd_ktm', '=', 'tbsatminkals.kd_ktm');
+                             $join->on('data_perangkats.kd_smkl','=', 'tbsatminkals.idsmkl');
+                         })
+                    ->select('data_perangkats.*', 'rakservers.namaRak', 'detail_penyedias.nama_mitra', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl', 'data_apl_sisfos.nama_apl', 'tbjenis.nama_jns')
                     ->get();
 
         if($alat){
-            return view('admin.server.index', compact('title','subtitle', 'servers', 'datarak', 'kotama', 'satuan', 'mitra', 'jenis', 'alat', 'aplsisfo'));
+            return view('admin.perangkat.index', compact('title','subtitle', 'servers', 'datarak', 'kotama', 'satuan', 'mitra', 'jenis', 'alat', 'aplsisfo'));
         } else {
             $alat= '';
-            return view('admin.server.index', compact('title','subtitle', 'servers', 'datarak', 'kotama', 'satuan', 'mitra', 'jenis', 'alat', 'aplsisfo'));
+            return view('admin.perangkat.index', compact('title','subtitle', 'servers', 'datarak', 'kotama', 'satuan', 'mitra', 'jenis', 'alat', 'aplsisfo'));
         }
     }
 
@@ -67,37 +80,49 @@ class DataServerController extends Controller
     {
         $validatedData = $request->validate([
             'serialNumber'  => 'required',
-            'sisops'        => 'nullable',
-            'socket'        => 'required',
-            'core'          => 'required',
-            'slot'          => 'required',
-            'bios'          => 'required',
-            'scsi'          => 'nullable',
-            'hdisk'         => 'nullable',
-            'descrip'       => 'nullable'          
+            'merk'          => 'required',
+            'model'         => 'required',
+            'kapasitas'     => 'nullable',
+            'storage'       => 'nullable',
+            'kode_jns'      => 'nullable',
+            'kodeRak'       => 'required',
+            'ip_address'    => 'nullable|ip',
+            'tgl_aktif'     => 'nullable|date',
+            'kondisi'       => 'required',
+            'sistemOperasi' => 'nullable',
+            'status'        => 'required',
+            'kd_ktm'        => 'nullable',
+            'kd_smkl'       => 'nullable',
+            'peruntukan'    => 'nullable',
+            'id_mitra'      => 'nullable',
+            'id_apl'        => 'nullable',
+            'keterangan'    => 'nullable'           
         ]);
+        
         $validatedData['user_id'] = Auth::user()->id;
         
         $sn = $request->serialNumber;
-        $cek = DataServer::where(['serialNumber' => $sn])->first();
+        $cek = DataPerangkat::where(['serialNumber' => $sn])->first();
         if (!$cek) {
-            
-            $simpan = DataServer::create($validatedData);
+            $validatedData['tgl_aktif'] = date('Y-m-d', strtotime(str_replace('-', replace: '/', subject: $request->tgl_aktif)));
+            $validatedData['kd_ktm']  = $request->kotama; 
+            $validatedData['kd_smkl'] = $request->satuan;
+            $simpan = DataPerangkat::create($validatedData);
             if($simpan){
                 return response()->json([
                     'status' => 200, 
-                    'message' => 'Server berhasil ditambahkan'
+                    'message' => 'Data perangkat berhasil ditambahkan'
                 ]);
             } else {
                 return response()->json([
                     'status' => 500, 
-                    'message' => 'Server gagal ditambahkan'
+                    'message' => 'Data perangkat gagal ditambahkan'
                 ]);
             }
         } else {
             return response()->json([
                 'status' => 500, 
-                'message' => 'Server gagal ditambahkan, karena SERIAL NUMBER sudah ada'
+                'message' => 'Data perangkat gagal ditambahkan, karena SERIAL NUMBER sudah ada'
             ]);
         }
     }
@@ -108,19 +133,19 @@ class DataServerController extends Controller
     public function show($id)
     {
         
-        $daServer   = DB::table('data_servers')
-                    ->leftJoin('rakservers', 'data_servers.kodeRak', '=', 'rakservers.kodeRak')
-                    ->leftJoin('detail_penyedias', 'data_servers.id_mitra', '=', 'detail_penyedias.id_mitra')
-                    ->leftJoin('data_apl_sisfos', 'data_servers.id_apl', '=', 'data_apl_sisfos.id_apl')
-                    ->leftJoin('tbjenis', 'data_servers.kode_jns', '=', 'tbjenis.kode_jns')
-                    ->leftJoin('tbkotamas', 'data_servers.kd_ktm', '=', 'tbkotamas.kd_ktm')
+        $daServer   = DB::table('data_perangkats')
+                    ->leftJoin('rakservers', 'data_perangkats.kodeRak', '=', 'rakservers.kodeRak')
+                    ->leftJoin('detail_penyedias', 'data_perangkats.id_mitra', '=', 'detail_penyedias.id_mitra')
+                    ->leftJoin('data_apl_sisfos', 'data_perangkats.id_apl', '=', 'data_apl_sisfos.id_apl')
+                    ->leftJoin('tbjenis', 'data_perangkats.kode_jns', '=', 'tbjenis.kode_jns')
+                    ->leftJoin('tbkotamas', 'data_perangkats.kd_ktm', '=', 'tbkotamas.kd_ktm')
                     ->leftJoin('tbsatminkals', function($join)
                          {
-                             $join->on('data_servers.kd_ktm', '=', 'tbsatminkals.kd_ktm');
-                             $join->on('data_servers.kd_smkl','=', 'tbsatminkals.idsmkl');
+                             $join->on('data_perangkats.kd_ktm', '=', 'tbsatminkals.kd_ktm');
+                             $join->on('data_perangkats.kd_smkl','=', 'tbsatminkals.idsmkl');
                          })
-                    ->where('data_servers.id', '=', $id)
-                    ->select('data_servers.*', 'rakservers.namaRak', 'detail_penyedias.nama_mitra', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl', 'data_apl_sisfos.nama_apl', 'tbjenis.nama_jns')                    
+                    ->where('data_perangkats.id', '=', $id)
+                    ->select('data_perangkats.*', 'rakservers.namaRak', 'detail_penyedias.nama_mitra', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl', 'data_apl_sisfos.nama_apl', 'tbjenis.nama_jns')                    
                     ->get();
         return response()->json( $daServer);
     }
@@ -128,7 +153,7 @@ class DataServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DataServer $dataServer)
+    public function edit(DataPerangkat $dataPerangkat)
     {
         //
     }
@@ -136,7 +161,7 @@ class DataServerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DataServer $dataServer)
+    public function update(Request $request, DataPerangkat $dataPerangkat)
     {
         $validatedData = $request->validate([
             'serialNumber'  => 'required',
@@ -162,7 +187,7 @@ class DataServerController extends Controller
         $validatedData['user_id'] = Auth::user()->id;
         // $validatedData['kd_ktm']  = $request->kotama; 
         // $validatedData['kd_smkl'] = $request->satuan;
-        $simpan = DataServer::where('serialNumber', $request->serialNumber)->update([
+        $simpan = DataPerangkat::where('serialNumber', $request->serialNumber)->update([
             'merk'          => $request->merk,
             'model'         => $request->model,
             'kapasitas'     => $request->kapasitas,
@@ -200,7 +225,7 @@ class DataServerController extends Controller
      */
     public function destroy($id)
     {
-        $daftar = DataServer::findOrFail($id);
+        $daftar = DataPerangkat::findOrFail($id);
         $daftar->delete();
         return redirect('server')->with('success', 'Data berhasil dihapus.'); 
     }

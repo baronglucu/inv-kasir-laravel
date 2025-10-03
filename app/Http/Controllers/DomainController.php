@@ -98,14 +98,20 @@ class DomainController extends Controller
             ]);
         }
     }
-
+ 
     /**
      * Display the specified resource.
      */
     public function show($id)
     {
-        $dadom = Domain::find(id: $id);
-        // dd($dasers);
+        // $dadom = Domain::find(id: $id);
+        $dadom       = DB::table('domains')
+                    ->leftJoin('tb_whms', 'domains.id_whm', '=', 'tb_whms.id')
+                    ->leftJoin('tbkotamas', 'domains.kd_ktm', '=', 'tbkotamas.kd_ktm')
+                    ->leftJoin('tbsatminkals', 'domains.kd_smkl', '=', 'tbsatminkals.idsmkl')
+                    ->where('domains.id','=',$id)
+                    ->select('domains.*', 'tb_whms.nama_whm', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl')
+                    ->get();
         return response()->json( $dadom);
     }
 

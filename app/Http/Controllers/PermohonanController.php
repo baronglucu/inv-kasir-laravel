@@ -8,7 +8,6 @@ use App\Models\Tbkotama;
 use App\Models\Tbsatminkal;
 use Auth;
 use DB;
-use File;
 use Illuminate\Http\Request;
 use Storage;
 
@@ -32,15 +31,37 @@ class PermohonanController extends Controller
                              $join->on('permohonans.kd_ktm', '=', 'tbsatminkals.kd_ktm');
                              $join->on('permohonans.kd_smkl','=', 'tbsatminkals.idsmkl');
                          })
-                    ->select('permohonans.*', 'domains.nama_domain', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl')
+                    ->leftJoin('tbsatminkals as tbtb', function($join)
+                         {
+                             $join->on('permohonans.kd_ktm', '=', 'tbtb.kd_ktm');
+                             $join->on('permohonans.utk_satuan','=', 'tbtb.idsmkl');
+                         })
+                    ->select('permohonans.id', 
+                    'permohonans.no_mohon',
+                    'permohonans.no_surat',
+                    'permohonans.tgl_surat',
+                    'permohonans.perihal',
+                    'permohonans.kd_ktm',
+                    'permohonans.kd_smkl',
+                    'permohonans.utk_satuan',
+                    'permohonans.nm_domain',
+                    'permohonans.id_domain',
+                    'permohonans.status',
+                    'permohonans.klasifikasi',
+                    'permohonans.melalui',
+                    'permohonans.file_surat',
+                    'domains.nama_domain', 
+                    'tbkotamas.ur_ktm', 
+                    'tbsatminkals.ur_smkl as ur_smkl',
+                    'tbtb.ur_smkl as utk_smkl')
                     ->orderBy('permohonans.tgl_surat', 'asc')
                     ->get();
 
         if($alat){
-            return view('admin.Permohonan.index', compact('title','subtitle', 'kotama', 'satuan', 'alat'));
+            return view('admin.permohonan.index', compact('title','subtitle', 'kotama', 'satuan', 'alat', 'domain'));
         } else {
             $alat= '';
-            return view('admin.Permohonan.index', compact('title','subtitle', 'kotama', 'satuan', 'alat'));
+            return view('admin.permohonan.index', compact('title','subtitle', 'kotama', 'satuan', 'alat', 'domain'));
         }
     }
 
@@ -55,14 +76,14 @@ class PermohonanController extends Controller
             // Dapatkan path file dari storage
             $path = Storage::disk('files')->path($file->file_surat); 
             // Atau bisa menggunakan full_path untuk mendapatkan nama lengkap file            
-            return view('Permohonan.create', [
+            return view('permohonan.create', [
                 'file' => $file,
                 'full_path' => $file->full_path,
                 'content_type' => $file->mime_type
             ]);
         }
         
-        return view('Permohonan.create', ['error' => 'File tidak ditemukan']);
+        return view('permohonan.create', ['error' => 'File tidak ditemukan']);
     }
 
     /**
@@ -142,11 +163,41 @@ class PermohonanController extends Controller
                              $join->on('permohonans.kd_ktm', '=', 'tbsatminkals.kd_ktm');
                              $join->on('permohonans.kd_smkl','=', 'tbsatminkals.idsmkl');
                          })
+                    ->leftJoin('tbsatminkals as tbtb', function($join)
+                         {
+                             $join->on('permohonans.kd_ktm', '=', 'tbtb.kd_ktm');
+                             $join->on('permohonans.utk_satuan','=', 'tbtb.idsmkl');
+                         })
+                    ->select('permohonans.id', 
+                    'permohonans.no_mohon',
+                    'permohonans.no_surat',
+                    'permohonans.tgl_surat',
+                    'permohonans.perihal',
+                    'permohonans.kd_ktm',
+                    'permohonans.kd_smkl',
+                    'permohonans.utk_satuan',
+                    'permohonans.nm_domain',
+                    'permohonans.id_domain',
+                    'permohonans.status',
+                    'permohonans.klasifikasi',
+                    'permohonans.melalui',
+                    'permohonans.file_surat',
+                    'domains.nama_domain', 
+                    'domains.hosting',
+                    'domains.framework',
+                    'domains.status as sts_dom',
+                    'domains.keterangan as ket_dom',
+                    'domains.tgl_aktif as tgl_akt',
+                    'tbkotamas.ur_ktm', 
+                    'tbsatminkals.ur_smkl as ur_smkl',
+                    'tbtb.ur_smkl as utk_smkl')
                     ->where('permohonans.id','=',$id)
-                    ->select('permohonans.*', 'domains.nama_domain', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl')                    
+                    ->orderBy('permohonans.tgl_surat', 'asc')
                     ->get();
+
+        // $domain     = DB::select('select * from domains where id = ?', [$id]);
         
-        return response()->json( $alat);
+        return response()->json($alat);
     }
 
     /**
@@ -192,7 +243,7 @@ class PermohonanController extends Controller
                 'klasifikasi'   => $request->klasifikasi,
                 'melalui'       => $request->melalui,
                 'id_domain'     => $request->id_domain,
-                'file_surat'    => $request->file_surat ? $request->file_surat : null, // Jika file_surat tidak diubah, tetap simpan null
+                'file_surat'    => $request->file_surat 
         ]);
 
         if($simpan){

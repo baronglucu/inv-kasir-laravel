@@ -31,9 +31,9 @@
               <span class="info-box-icon bg-info elevation-1"><i class="fas fa-comments"></i></span>
               
               <div class="info-box-content">
-                <span class="info-box-text">Pengaduan</span>
+                <span class="info-box-text">Jml Pengaduan</span>
                 <span class="info-box-number">
-                  10
+                  {{ $jmlPengaduan ?? 0 }}
                   <small> kasus</small>
                 </span>
               </div>
@@ -47,10 +47,10 @@
               <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-landmark"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Kapasitas WH</span>
+                <span class="info-box-text">Kapasitas WHM</span>
                 <span class="info-box-number">
-                  82
-                  <small>%</small>
+                  {{ $totalWhm ?? 0 }}
+                  <small> slot</small>
                 </span>
               </div>
               <!-- /.info-box-content -->
@@ -68,7 +68,8 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Website Satuan</span>
-                <span class="info-box-number">760</span>
+                <span class="info-box-number">{{ $jmlDomain ?? 0 }}
+                  <small> Web</small></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -95,7 +96,7 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h5 class="card-title">Laporan Rekapitulasi Serangan</h5>
+                <h5 class="card-title">Laporan Rekapitulasi Pengaduan</h5>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -123,7 +124,7 @@
                 <div class="row">
                   <div class="col-md-8">
                     <p class="text-center">
-                      <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                      <strong>Pengaduan: 1 Jan, 2025 - 30 Jul, 2025</strong>
                     </p>
 
                     <div class="chart">
@@ -139,7 +140,7 @@
                     </p>
 
                     <div class="progress-group">
-                      Add Products to Cart
+                      Selesai
                       <span class="float-right"><b>160</b>/200</span>
                       <div class="progress progress-sm">
                         <div class="progress-bar bg-primary" style="width: 80%"></div>
@@ -148,7 +149,7 @@
                     <!-- /.progress-group -->
 
                     <div class="progress-group">
-                      Complete Purchase
+                      Proses
                       <span class="float-right"><b>310</b>/400</span>
                       <div class="progress progress-sm">
                         <div class="progress-bar bg-danger" style="width: 75%"></div>
@@ -157,7 +158,7 @@
 
                     <!-- /.progress-group -->
                     <div class="progress-group">
-                      <span class="progress-text">Visit Premium Page</span>
+                      <span class="progress-text">Pending</span>
                       <span class="float-right"><b>480</b>/800</span>
                       <div class="progress progress-sm">
                         <div class="progress-bar bg-success" style="width: 60%"></div>
@@ -166,7 +167,7 @@
 
                     <!-- /.progress-group -->
                     <div class="progress-group">
-                      Send Inquiries
+                      Suspend
                       <span class="float-right"><b>250</b>/500</span>
                       <div class="progress progress-sm">
                         <div class="progress-bar bg-warning" style="width: 50%"></div>
@@ -184,8 +185,8 @@
                   <div class="col-sm-3 col-6">
                     <div class="description-block border-right">
                       <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 17%</span>
-                      <h5 class="description-header">$35,210.43</h5>
-                      <span class="description-text">TOTAL REVENUE</span>
+                      <h5 class="description-header">{{$jmlPengaduan}}</h5>
+                      <span class="description-text">TOTAL PENGADUAN</span>
                     </div>
                     <!-- /.description-block -->
                   </div>
@@ -193,8 +194,8 @@
                   <div class="col-sm-3 col-6">
                     <div class="description-block border-right">
                       <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i> 0%</span>
-                      <h5 class="description-header">$10,390.90</h5>
-                      <span class="description-text">TOTAL COST</span>
+                      <h5 class="description-header">0</h5>
+                      <span class="description-text">TOTAL SELESAI</span>
                     </div>
                     <!-- /.description-block -->
                   </div>
@@ -202,8 +203,8 @@
                   <div class="col-sm-3 col-6">
                     <div class="description-block border-right">
                       <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 20%</span>
-                      <h5 class="description-header">$24,813.53</h5>
-                      <span class="description-text">TOTAL PROFIT</span>
+                      <h5 class="description-header">0</h5>
+                      <span class="description-text">TOTAL PENDING</span>
                     </div>
                     <!-- /.description-block -->
                   </div>
@@ -211,8 +212,8 @@
                   <div class="col-sm-3 col-6">
                     <div class="description-block">
                       <span class="description-percentage text-danger"><i class="fas fa-caret-down"></i> 18%</span>
-                      <h5 class="description-header">1200</h5>
-                      <span class="description-text">GOAL COMPLETIONS</span>
+                      <h5 class="description-header">0</h5>
+                      <span class="description-text">TOTAL SUSPEND</span>
                     </div>
                     <!-- /.description-block -->
                   </div>
@@ -863,6 +864,24 @@
   <!-- /.content-wrapper -->
 @endsection  
 
-
+@section('js')
+<script>
+$(function () {
+    // Contoh chart menggunakan Chart.js
+    var ctx = document.getElementById('dashboardChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['A', 'B', 'C'],
+            datasets: [{
+                label: 'Contoh Data',
+                data: [12, 19, 3],
+                backgroundColor: ['#007bff', '#28a745', '#dc3545']
+            }]
+        }
+    });
+});
+</script>
+@endsection
   
   

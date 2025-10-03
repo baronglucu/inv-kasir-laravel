@@ -74,7 +74,7 @@
                                 <td>{{ $item->Keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-primary" tooltip="Show" id="showDetail" data-id_mitra="{{ $item->id }}"><i class="fas fa-eye"></i></button>
+                                    <button type="button" class="btn btn-sm btn-primary" tooltip="Show" id="showDetail" data-url="{{ route('mitra.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail"><i class="fas fa-eye"></i></button>
                                     &nbsp;
                                     <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('mitra.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;
@@ -172,7 +172,70 @@
     <!-- /.modal-dialog -->
   </div>
 
-  <!-- /.modal update data -->
+  <!-- /.modal-detail -->
+  <div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content bg-secondary">
+        <div class="modal-header">
+          <h4 class="modal-title">Detail Data Mitra</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <span id="coba"></span>
+        <div class="modal-body">
+          <form id="form-detail-mitra" method="">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">    
+                          <label for="id_mitra">Id Mitra</label>
+                          <input type="text" id="id_mitra" name="id_mitra" class="form-control" readonly>                        
+                          <label for="nama_mitra">Nama Mitra</label>
+                          <input type="text" id="nama_mitra" name="nama_mitra" class="form-control" readonly>
+                          <label for="alamat">Alamat</label>
+                          <textarea class="form-control" id="alamat" name="alamat" rows="3"></textarea>
+                          <label for="kota">Kota</label>
+                          <input type="text" id="kota" name="kota" class="form-control" readonly>
+                          <label for="provinsi">Provinsi</label>
+                          <input type="text" id="provinsi" name="provinsi" class="form-control">
+                          <label for="notelp">No Telp</label>
+                          <input type="text" id="notelp" name="notelp" class="form-control" readonly>
+                          <label for="email">e-Mail</label>
+                          <input type="text" id="email" name="email" class="form-control" readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">     
+                          <label for="alamat_web">Alamat Web</label>
+                          <input type="text" id="alamat_web" name="alamat_web" class="form-control" readonly>                       
+                          <label for="nama_pimpinan">Nama Pimpinan</label>
+                          <input type="text" id="nama_pimpinan" name="nama_pimpinan" class="form-control" readonly>
+                          <label for="nohp_pimpinan">No Telp Pimpinan</label>
+                          <input type="text" id="nohp_pimpinan" name="nohp_pimpinan" class="form-control">
+                          <label for="email_pimpinan">e-Mail Pimpinan</label>
+                          <input type="text" id="email_pimpinan" name="email_pimpinan" class="form-control" readonly>
+                          <label for="npwp">NPWP</label>
+                          <input type="text" id="npwp" name="npwp" class="form-control">     
+                          <label for="siup">SIUP</label>
+                          <input type="text" id="siup" name="siup" class="form-control" readonly> 
+                          <label for="keterangan">Keterangan</label>
+                          <textarea class="form-control" id="keterangan" name="keterangan" rows="3" readonly></textarea>
+                      </div>
+                  </div>
+              </div>                         
+            </div>            
+          </form>
+        </div>        
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal detail data -->
   <div class="modal fade" id="modal-update" tabindex="-1" role="dialog" >
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-info">
@@ -305,10 +368,10 @@
       });
     });
 
-    $(document).on('click', '#showDetail', function(){
-      let id_produk = $(this).data('id_mitra');
-      alert(id_produk);
-    });
+    // $(document).on('click', '#showDetail', function(){
+    //   let id_produk = $(this).data('id_mitra');
+    //   alert(id_produk);
+    // });
 
 </script>
 <script>
@@ -389,6 +452,33 @@
             $("#form-update-mitra #keterangan").val(data.keterangan);
             // $('input[name=dataTemp]').val(data);
             $('#modal-update #dataTemp').val(JSON.stringify(data));
+        })
+    });
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('body').on('click', '#showDetail', function(){
+        var editURL = $(this).data('url');
+        $.get(editURL, function(data){
+            // console.log(data);
+            $('#modal-detail').modal('show');
+            $('#form-detail-mitra #id').val(data.id);
+            $('#form-detail-mitra #id_mitra').val(data.id_mitra);
+            $('#form-detail-mitra #nama_mitra').val(data.nama_mitra);
+            $("#form-detail-mitra #alamat").val(data.alamat);
+            $("#form-detail-mitra #kota").val(data.kota);
+            $("#form-detail-mitra #provinsi").val(data.provinsi);
+            $('#form-detail-mitra #notelp').val(data.notelp);
+            $('#form-detail-mitra #email').val(data.email);
+            $("#form-detail-mitra #alamat_web").val(data.alamat_web);
+            $('#form-detail-mitra #nama_pimpinan').val(data.nama_pimpinan);
+            $("#form-detail-mitra #nohp_pimpinan").val(data.nohp_pimpinan);
+            $("#form-detail-mitra #email_pimpinan").val(data.email_pimpinan);
+            $("#form-detail-mitra #npwp").val(data.npwp);
+            $("#form-detail-mitra #siup").val(data.siup);
+            $("#form-detail-mitra #keterangan").val(data.keterangan);
         })
     });
   });

@@ -5,8 +5,12 @@
   <link rel="stylesheet" href="{{ asset('')}}plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="{{ asset('')}}plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="{{ asset('')}}plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Select2 CSS -->
+  <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ asset('')}}plugins/sweetalert2/sweetalert2.css">
   <link rel="stylesheet" href="{{ asset('')}}plugins/sweetalert2/sweetalert2.min.css">
+
   <style>
     .select2-container--default .select2-selection--single .select2-selection__rendered {
       color: #444;
@@ -16,11 +20,11 @@
       width: 100% !important;
       z-index: 99999;
     }
-    .select2-container--default .select2-selection--single {
-      padding: 6px 15px;
-      border: 1px solid #a4bbd3;
-      height: 38px;
-    }
+      .select2-container--default .select2-selection--single {
+          padding: 6px 15px;
+          border: 1px solid #a4bbd3;
+          height: 38px;
+      }
   </style>
 @endsection
 
@@ -54,7 +58,7 @@
                 <button type="button" class="btn btn-sm btn-primary float-sm-right" data-toggle="modal" data-target="#modal-tambah"><i class="fa fa-plus"></i> Tambah </button>
             </div>
             <div class="card-body">
-                <table id="example1" name='example1' class="table table-bordered table-striped">                  
+                <table id="example1" name='example1' class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -76,7 +80,7 @@
                     </thead>
                     <tbody>
                       @foreach ($alat as $data)
-                        <tr>
+                      <tr>
                           <td>{{ $loop->iteration }}</td>
                           <td>{{ $data->no_mohon }}</td>
                           <td>{{ $data->ur_ktm }}</td>
@@ -127,7 +131,7 @@
                                 </form>
                               </div>
                           </td>
-                        </tr>
+                      </tr>
                       @endforeach
                     </tbody>
                 </table>
@@ -149,7 +153,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
             <span aria-hidden="true">&times;</span>
           </button>
-        </div>
+        </div>        
         <div class="modal-body">
           <form id="form-create-adu" name="form-create-adu" enctype="multipart/form-data" method="POST">
             @csrf
@@ -165,7 +169,7 @@
                                     <label class="form-label">Nomor Permohonan : </label>&nbsp;
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">LPm- </span>
-                                    </div>
+                                      </div>
                                     <input type="text" id="no_mohon" name="no_mohon" class="form-control" data-no_mohon="'mask': ['9999/X/9999']" data-mask required>
                                     <div class="input-group-append">
                                         <span class="input-group-text">/Pusta</span>
@@ -174,14 +178,14 @@
                                 <div class="col-md-3">
                                     <span>&nbsp;</span>
                                 </div>
-							              </div>
-						            </div>
+                            </div>
+                        </div>
                     </div>                    
-					          <div class="col-md-6">
+                  <div class="col-md-6">
                         <div class="form-group"> 
                             <div class="row">
                                 <div class="col-md-6">
-                                  <label class="form-label">Dari Kotama</label>
+                                  <label class="form-label">Kotama</label>
                                   <select class="form-control select2" id="kotama" name="kotama">
                                       <option value="" selected="selected">-- Pilih Kotama --</option>
                                       @foreach ($kotama as $kot)
@@ -190,7 +194,7 @@
                                   </select>
                                 </div>
                                 <div class="col-md-6"> 
-                                  <label class="form-label">Dari Satuan</label>
+                                  <label>Satuan</label>
                                   <select class="form-control select2" id="satuan" name="satuan">
                                       <option value="" selected="selected">-- Pilih Satuan--</option>
                                   </select>
@@ -218,8 +222,10 @@
                             <textarea class="form-control" id="perihal" name="perihal" rows="3" placeholder="Perihal Surat"></textarea>
                         </div>
                     </div>
+
                     <div class="col-md-6">
-                        <div class="form-group">     
+                        <div class="form-group">                            
+                                                        
                             <label>Status</label>
                             <div class="card card-light card-outline mt-1 mb-1">
                               <div class="card-body">                            
@@ -237,6 +243,7 @@
                                 </div>
                               </div>                              
                             </div>
+                            
                             <div class="row g-3 align-items-center">
                               <div class="col-md-6">
                                 <label for="utk_satuan">Untuk Satuan</label>                 
@@ -246,9 +253,14 @@
                               </div>
                               <div class="col-md-6">
                                 <label for="nm_domain">Usulan Nama Domain</label>
-                                <input type="text" class="form-control" id="nm_domain" name="nm_domain" min="1">                                  
+                                <input type="text" class="form-control" id="nm_domain" name="nm_domain" min="1"> 
+                                {{-- <select class="form-control select2" id="nm_domain" name="nm_domain">
+                                  <option value="" selected="selected"> </option>
+                                </select>                                   --}}
                               </div>
                             </div>
+
+
                             <div class="row g-3 align-items-center">
                                 <div class="col-md-6">
                                     <label>Klasifikasi</label>
@@ -267,7 +279,9 @@
                                     </select>  
                                 </div>                              
                             </div> 
+                            
                           <div class="custom-file mt-1">
+                         
                           <div class="custom-file">
                               <label for="file_surat">Pilih File : </label>
                               <input type="file" name="file_surat" id="file_surat" accept=".pdf">
@@ -320,7 +334,6 @@
                                 </div>
                                 <div class="col-md-3">
                                     <span>&nbsp;</span>
-                                    <input type="hidden" id="id" name="id" class="form-control" hidden>
                                 </div>
                             </div>
                         </div>
@@ -329,7 +342,7 @@
                         <div class="form-group"> 
                             <div class="row">
                                 <div class="col-md-6">
-                                  <label class="form-label">Dari Kotama</label>
+                                  <label class="form-label">Kotama</label>
                                   <select class="form-control select2" id="kotama" name="kotama">
                                       <option value="" selected="selected">-- Pilih Kotama --</option>
                                       @foreach ($kotama as $kot)
@@ -338,9 +351,9 @@
                                   </select>
                                 </div>
                                 <div class="col-md-6"> 
-                                  <label class="form-label">Dari Satuan</label>
+                                  <label>Satuan</label>
                                   <select class="form-control select2" id="satuan" name="satuan">
-									  <option value="" selected="selected"></option>
+                                      <option value="" selected="selected"></option>
                                       @foreach ($satuan as $sat)
                                       <option value="{{$sat->idsmkl}}">{{$sat->ur_smkl}}</option>
                                       @endforeach
@@ -369,50 +382,50 @@
                             <textarea class="form-control" id="perihal" name="perihal" rows="3" placeholder="Perihal Surat"></textarea>
                         </div>
                         <label>Status</label>
-                        <div class="card card-light card-outline mt-1 mb-1">
-							<div class="card-body">                            
-								<div class="custom-control custom-radio d-inline col-md-3">
-									<input class="custom-control-input custom-control-input-success" type="radio" id="s1" name="status" value="1" checked>
-									<label for="s1" class="custom-control-label col-md-2">Proses</label>
-								</div>
-								<div class="custom-control custom-radio d-inline col-md-3">
-									<input class="custom-control-input custom-control-input-info" type="radio" id="s2" name="status" value="2">
-									<label for="s2" class="custom-control-label col-md-2">Pending</label>
-								</div>
-								<div class="custom-control custom-radio d-inline col-md-3">
-									<input class="custom-control-input custom-control-input-warning" type="radio" id="s3" name="status" value="3">
-									<label for="s3" class="custom-control-label col-md-2">Selesai</label>
-								</div>
-							</div>                              
-            </div>
-					</div>
+                            <div class="card card-light card-outline">
+                              <div class="card-body">                            
+                                <div class="custom-control custom-radio d-inline col-md-3">
+                                  <input class="custom-control-input custom-control-input-success" type="radio" id="s1" name="status" value="1" checked>
+                                    <label for="s1" class="custom-control-label col-md-2">Proses</label>
+                                </div>
+                                <div class="custom-control custom-radio d-inline col-md-3">
+                                  <input class="custom-control-input custom-control-input-info" type="radio" id="s2" name="status" value="2">
+                                  <label for="s2" class="custom-control-label col-md-2">Pending</label>
+                                </div>
+                                <div class="custom-control custom-radio d-inline col-md-3">
+                                  <input class="custom-control-input custom-control-input-warning" type="radio" id="s3" name="status" value="3">
+                                  <label for="s3" class="custom-control-label col-md-2">Selesai</label>
+                                </div>
+                              </div>                              
+                            </div>
+                    </div>
                     <div class="col-md-6">
-                        <div class="form-group">        
+                        <div class="form-group"> 
                             <div class="row g-3 align-items-center">
                               <div class="col-md-6">
                                 <label for="utk_satuan">Untuk Satuan</label>                 
                                 <select class="form-control select2" id="utk_satuan" name="utk_satuan">
-									<option value="" selected="selected"></option>
-                                    @foreach ($satuan as $sat)
-                                    <option value="{{$sat->idsmkl}}">{{$sat->ur_smkl}}</option>
-                                    @endforeach
+                                  <option value="" selected="selected"></option>
+                                      @foreach ($satuan as $sat)
+                                      <option value="{{$sat->idsmkl}}">{{$sat->ur_smkl}}</option>
+                                      @endforeach
                                 </select>
-								</div>
-								<div class="col-md-6">
-									<label for="nm_domain">Usulan Nama Domain</label>
-									<input type="text" class="form-control" id="nm_domain" name="nm_domain" min="1">
-								</div>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="nm_domain">Usulan Nama Domain</label>
+                                <input type="text" class="form-control" id="nm_domain" name="nm_domain" min="1"> 
+                              </div>
                             </div>
-							{{-- <div class="col-md-6"> --}}
+                            {{-- <div class="col-md-6"> --}}
                                 <label for="nm_domain">Nama Domain</label>
                                 <select class="form-control select2" id="id_domain" name="id_domain">
                                   <option value="" selected="selected"> </option>
                                     @foreach ($domain as $dom)
-                                      <option value="{{$dom->id}}">{{$dom->nama_domain}}</option>
+                                      <option value="{{$dom->id}}">{{$sat->nama_domain}}</option>
                                     @endforeach
                                 </select>                                 
                               {{-- </div> --}}
-							  
+
                             <div class="row g-3 align-items-center">
                                 <div class="col-md-6">
                                     <label>Klasifikasi</label>
@@ -430,19 +443,23 @@
                                         <option value="telp">Telepon</option>
                                     </select>  
                                 </div>                              
-                            </div> 
-                            <label>Dokumen Lama</label>
-							<div id="file_lama"></div>&nbsp;&nbsp;<span id="nama_file" nama="nama_file"></span>
-                          
-							<div class="custom-file mt-1">
-								<div class="custom-file">
-								  <label for="file_surat">Pilih File : </label>
-								  <input type="file" name="file_surat" id="file_surat" accept=".pdf">
-								  <div class="invalid-feedback">File harus berformat PDF</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                            </div>                             
+                            <label>Dokumen : </label>
+                            <div id="file_lama">
+                              {{-- <button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/' . $data->file_surat) }}">
+                              <i class="fas fa-file"></i>
+                              </button> --}}
+                            </div>                            
+
+                          <div class="custom-file mt-1">                         
+                            <div class="custom-file">
+                                <label for="file_surat">Pilih File : </label>
+                                <input type="file" name="file_surat" id="file_surat" accept=".pdf">
+                                <div class="invalid-feedback">File harus berformat PDF</div>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="mt-3" >
                     <button type="submit" class="btn btn-outline-light float-sm-right"><i class="fas fa-save"></i> Simpan</button>
@@ -482,7 +499,7 @@
   </div>
 </div>
 
-<!-- /.modal-detail -->
+
 <div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -503,15 +520,15 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <div class="row mt-1">
-                      <label for="" class="col-md-4">No. Permohonan</label>
+                      <label for="" class="col-md-4">Nomor Permohonan</label>
                       <input type="text" class="form-control col-md-7" id="no_mohon" name="no_mohon" value="" disabled>
                     </div>
                     <div class="row mt-1">  
-                      <label for="" class="col-md-4">Dari Kotama</label>
+                      <label for="" class="col-md-4">Kotama</label>
                       <input type="text" class="form-control col-md-7" id="kotama" name="kotama" value="" disabled>
                     </div>
                     <div class="row mt-1">  
-                      <label for="" class="col-md-4">Dari Satuan</label>
+                      <label for="" class="col-md-4">Satuan</label>
                       <input type="text" class="form-control col-md-7" id="satuan" name="satuan" value="" disabled>
                     </div>
                     <div class="row mt-1">  
@@ -533,7 +550,7 @@
                       <input type="text" class="form-control col-md-7" id="utk_satuan" name="utk_satuan" value="" disabled>
                     </div>                    
                     <div class="row mt-1"> 
-                      <label for="" class="col-md-4">Usulan Nama Domain</label>
+                      <label for="" class="col-md-4">Nama Domain</label>
                       <input type="text" class="form-control col-md-7" id="nm_domain" name="nm_domain" value="" disabled>
                     </div>
                     <div class="row mt-1"> 
@@ -543,61 +560,56 @@
                     <div class="row mt-1">
                       <label for="" class="col-md-4">Klasifikasi</label>
                       <input type="text" class="form-control col-md-7" id="klasifikasi" name="klasifikasi" value="" disabled></input>
-                    </div>				
-                    <div class="row mt-1">
-                      <label for="" class="col-md-4">Nama File</label>
-                      <input type="text" class="form-control col-md-7" id="nama_file" name="nama_file" value="" disabled></input>						
                     </div>
-                    <div class="row mt-1">
-                      <label for="" class="col-md-4">Dokumen</label>
-                      <div id="file_lama" name='file_lama'></div>
-                    </div>	
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="card card-info">
+
+        {{-- <div class="card card-info">
           <div class="card-header">
-            <h3 class="card-title">Detail Domain : </h3>&nbsp;&nbsp;
-            <input type="text" class="col-md-4" id="nama_dom" name="nama_dom" value="" placeholder="Belum ada domain" disabled>
+            <h3 class="card-title">Rekapitulasi Status Domain</h3>
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <div class="form-group">
                   <div class="row mt-1">
-                    <label for="" class="col-md-4">Hosting</label>
-                    <input type="text" class="form-control col-md-7" id="hosting" name="hosting" value="" disabled>
-                  </div>
-                
-                  <div class="row mt-1">
-                    <label for="" class="col-md-4">Framework</label>
-                    <input type="text" class="form-control col-md-7" id="framework" name="framework" value="" disabled>
-                  </div>
-                
-                  <div class="row mt-1">
-                    <label for="" class="col-md-4">Status</label>
-                    <input type="text" class="form-control col-md-7" id="sts_dom" name="sts_dom" value="" disabled>
+                    <label for="" class="col-md-6 text-danger text-right">Error :</label>
+                    <input type="text" class="form-control col-md-4" id="eror" name="eror" value="" disabled>
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <div class="form-group">
                   <div class="row mt-1">
-                    <label for="" class="col-md-4">Tanggal Aktif :</label>
-                    <input type="text" class="form-control col-md-6" id="tgl_aktif" name="tgl_aktif" value="" disabled>
-                  </div>
-                  <div class="row mt-1">
-                    <label for="" class="col-md-4">Keterangan :</label>
-                    <textarea class="form-control col-md-7" id="ket_dom" name="ket_dom" rows="2"  disabled></textarea>
+                    <label for="" class="col-md-6 text-success text-right">Running :</label>
+                    <input type="text" class="form-control col-md-4" id="run" name="run" value="" disabled>
                   </div>
                 </div>
               </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="row mt-1">
+                    <label for="" class="col-md-6 text-warning text-right">Maintenance :</label>
+                    <input type="text" class="form-control col-md-4" id="main" name="main" value="" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="row mt-1">
+                    <label for="" class="col-md-6 text-muted text-right">Suspend :</label>
+                    <input type="text" class="form-control col-md-4" id="suspen" name="suspen" value="" disabled>
+                  </div>
+                </div>
+              </div>
+              
             </div>
           </div>
-        </div>
+        </div> --}}
         <div class="modal-footer justify-content-between">
           {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
@@ -663,68 +675,27 @@
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>
-<script>
-$(document).ready(function() {
 
-  $('#modal-tambah').on('shown.bs.modal', function () {
-    $('#modal-tambah .select2').select2({
-        theme: 'bootstrap4',
-        dropdownParent: $('#modal-tambah')
-    });
-});
-
-$('#modal-update').on('shown.bs.modal', function () {
-    $('#modal-update .select2').select2({
-        theme: 'bootstrap4',
-        dropdownParent: $('#modal-update')
-    });
-});
-
-  
-});
-
-$(document).ready(function() {
-    $('#modal-tambah').on('shown.bs.modal', function () {
-        $('#modal-tambah .select2').select2('destroy').select2({
-            theme: 'bootstrap4',
-            dropdownParent: $('#modal-tambah')
-        });
-    });
-    $('#modal-update').on('shown.bs.modal', function () {
-        $('#modal-update .select2').select2('destroy').select2({
-            theme: 'bootstrap4',
-            dropdownParent: $('#modal-update')
-        });
-    });
-});
-</script>
 <script>
     // Example: Attach the function to a button click
-	$(document).on('click', '.btn-view-file', function () {
+  $(document).on('click', '.btn-view-file', function () {
       const fileUrl = $(this).data('file-url'); // Get the file URL from the button's data attribute
       viewFile(fileUrl);
-	});
+  });
 
-    // $('#modal-tambah .select2').each(function() {  
-    //     var $p = $(this).parent(); 
-    //     $(this).select2({  
-    //         dropdownParent: $p  
-    //     });  
-    // });
+    $('#modal-tambah .select2').each(function() {  
+        var $p = $(this).parent(); 
+        $(this).select2({  
+            dropdownParent: $p  
+        });  
+    });
 
-    // $('#modal-tambah .select2').select2({
-    //     theme: 'bootstrap4',
-    //     dropdownParent: $('#modal-tambah')
-    // });
-    // $('#modal-update .select2').select2({
-    //     theme: 'bootstrap4',
-    //     dropdownParent: $('#modal-update')
-    // });
-
-    // $('.select2').select2({
-    //     theme: 'bootstrap4',
-    //     dropdownParent: $(this).closest('.modal').length ? $(this).closest('.modal') : $(document.body)
-    // });
+    $('#modal-update .select2').each(function() {  
+        var $p = $(this).parent(); 
+        $(this).select2({  
+            dropdownParent: $p  
+        });  
+    });
 
     function viewFile(fileUrl) {
       const fileExtension = fileUrl.split('.').pop().toLowerCase();
@@ -743,12 +714,94 @@ $(document).ready(function() {
       }
     }
     
-        // Tutup modal ketika diklik di luar
+    // Tutup modal ketika diklik di luar
     $('#viewModal').on('click', function(e) {
         if (e.target === this) {
-          $(this).modal('hide');
+            $(this).modal('hide');
         }
-    });    
+    });
+</script>
+<script> 
+    $(document).on('click', '#showDetail', function(){
+      
+      let id = $(this).data('id');
+      var editURL = $(this).data('url');
+      // alert(editURL);
+      $.get(editURL, function(data){
+            // const ipa = JSON.stringify(data);
+          var cek = data[0]['no_surat'];
+            console.log(data);
+            
+          const tglsrt = data[0]['tgl_surat'];
+          var options = { year: "numeric", month: "numeric", day: "numeric" };
+          const ftglsurat = new Date(tglsrt).toLocaleDateString('es-CL', options); 
+
+          $('#modal-detail').modal('show');
+          $('#modal-detail #no_mohon').val(data[0]['no_mohon']);
+          $('#modal-detail #kotama').val(data[0]['ur_ktm']);
+          $('#modal-detail #satuan').val(data[0]['ur_smkl']);
+          $('#modal-detail #no_surat').val(data[0]['no_surat']);
+          $('#modal-detail #tgl_surat').val(ftglsurat);
+          $('#modal-detail #perihal').val(data[0]['perihal']);
+          $('#modal-detail #utk_satuan').val(data[0]['utk_smkl']);
+          $('#modal-detail #nm_domain').val(data[0]['nm_domain']);
+          $('#modal-update #id_domain').val(data[0]['id_domain']);
+        //   if(data[0].file_surat) {
+        //     $('#modal-update #file_lama').html(
+        //         '<button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/') }}/'+data[0].file_surat+'"><i class="fas fa-file"></i></button>'
+        //     );
+        // } else {
+        //     $('#modal-update #file_lama').html('Tidak ada file');
+        // }
+
+          // $('#modal-detail #file_lama').append('<button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/') }}/'+data[0]['file_surat']+'"><i class="fas fa-file"></i></button>');
+          if(data[0]['sts'] == '1'){
+            $('#modal-detail #status').val('Proses');
+          } else if(data[0]['sts'] == '2'){
+            $('#modal-detail #status').val('Selesai');
+          } else {
+            $('#modal-detail #status').val('Unknown');
+          }
+          $('#modal-detail #klasifikasi').val(data[0]['klasifikasi'] == 'u' ? 'Urgent/Mendesak' : (data[0]['klasifikasi'] == 'i' ? 'Important/Penting' : ''));        
+      })  
+    });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('body').on('click', '#viewMessage', function(){
+        var editURL = $(this).data('url');
+        $.get(editURL, function(data){
+            console.log(data);
+            var sts = data[0].status;
+            // alert(sta);
+          $('#modal-update').modal('show');
+          $('#modal-update #no_mohon').val(data[0].no_mohon);
+          $('#modal-update #kotama').val(data[0].kd_ktm);
+          $('#modal-update #satuan').val(data[0].kd_smkl).trigger('change');
+          $('#modal-update #no_surat').val(data[0].no_surat);
+          $('#modal-update #tgl_surat').val(data[0].tgl_surat);
+          $('#modal-update #perihal').val(data[0].perihal);
+          $('#modal-update #utk_satuan').val(data[0].utk_satuan).trigger('change');
+          $('#modal-update #nm_domain').val(data[0].nm_domain);
+          $('#modal-update #id_domain').val(data[0].id_domain);
+          if(data[0].file_surat) {
+            $('#modal-update #file_lama').html(
+                '<button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/') }}/'+data[0].file_surat+'"><i class="fas fa-file"></i></button> '+data[0].file_surat
+            );
+          } else {
+              $('#modal-update #file_lama').html('Tidak ada file');
+          }
+          if(data[0].status == '1'){
+              $("#modal-update #s1").prop("checked",true);
+          }else if(data[0].status == '2'){
+              $("#modal-update #s2").prop("checked",true);
+          }else{
+              $("#modal-update #s3").prop("checked",true);
+          }
+          $('#modal-update #klasifikasi').val(data[0].klasifikasi);
+        })
+    });
+  });
 </script>
 <script>
   function confirmDelete(id) {
@@ -776,7 +829,7 @@ $(document).ready(function() {
           text: '{{ session('swal')['text'] }}',
           confirmButtonText: 'OK'
       }).then(() => {
-          window.location.href = "{{ route('permohonan.index') }}"; // Redirect setelah OK ditekan
+          window.location.href = "{{ route('permohonan.index') }}whm"; // Redirect setelah OK ditekan
       });
   @endif
 </script>
@@ -804,36 +857,30 @@ $(document).ready(function() {
                         });
                     }
                 });
-				// $.ajax({
-                    // url: '/get-domain/' + kdktm,
-                    // type: "GET",
-                    // data: { kd_ktm: kdktm },
-                    // success: function (data) {
+                $.ajax({
+                    url: '/get-domain/' + kdktm,
+                    type: "GET",
+                    data: { kd_ktm: kdktm },
+                    success: function (data) {
                         // console.log(data);
-                        // $('#id_domain').empty();                        
-                        // $('#id_domain').append('<option value=""> </option>');
-                        // $.each(data, function (key, value) {
-                            // $('#id_domain').append('<option value="' + value.id + '">' + value.nama_domain + '</option>');
-                        // });
-                    // }
-                // });
-            } else {
-                $('#satuan').empty().append('<option value="">Pilih Satuan</option>');
-                $('#utk_satuan').empty().append('<option value="">Pilih Satuan</option>');
-                $('#satuan').select2('destroy').select2({
-                    theme: 'bootstrap4',
-                    dropdownParent: $('#modal-tambah')
+                        $('#domain').empty();                        
+                        $('#domain').append('<option value=""> </option>');
+                        $.each(data, function (key, value) {
+                            $('#satuan').append('<option value="' + value.id + '">' + value.nama_domain + '</option>');
+                        });
+                    }
                 });
-                $('#utk_satuan').select2('destroy').select2({
-                    theme: 'bootstrap4',
-                    dropdownParent: $('#modal-tambah')
-                });              
+            } else {
+                $('#satuan').empty();
+                $('#satuan').append('<option value="">Pilih Satuan</option>');
+                $('#utk_satuan').empty();
+                $('#utk_satuan').append('<option value="">Pilih Satuan</option>');
             }
         });
-		
-		$('#utk_satuan').change(function () {
+
+        $('#utk_satuan').change(function () {
             var id_smkl = $(this).val();
-            console.log(id_smkl);
+            // console.log(id_smkl);
             if (id_smkl) {
                 $.ajax({
                     url: '/get-domain/' + id_smkl,
@@ -841,20 +888,21 @@ $(document).ready(function() {
                     data: { kd_smkl: id_smkl },
                     success: function (data) {
                         // console.log(data);
-                        $('#id_domain').empty();                        
-                        $('#id_domain').append('<option value=""> </option>');
+                        $('#nm_domain').empty();                        
+                        $('#nm_domain').append('<option value=""> </option>');
                         $.each(data, function (key, value) {
-                            $('#id_domain').append('<option value="' + value.id + '">' + value.nama_domain + '</option>');
+                            $('#nm_domain').append('<option value="' + value.id + '">' + value.nama_domain + '</option>');
                         });
                     }
                 });
             } else {
-                $('#domain').empty().append('<option value="">Pilih Satuan</option>');
+                $('#domain').empty();
+                $('#domain').append('<option value="">Pilih Satuan</option>');
             }
         });
     });
-	
-	$(document).ready(function() {
+    
+    $(document).ready(function() {
       $('#form-create-adu').submit(function(e) {
           e.preventDefault();
           var formData = new FormData(this);
@@ -884,120 +932,17 @@ $(document).ready(function() {
             });
 
       $('#btnClear').click(function() {
-        $('#form-create-adu')[0].reset();
-        $('#form-update-adu')[0].reset();
-        // Reset Select2 fields
-        $('#modal-tambah .select2').val(null).trigger('change');
-        $('#modal-update .select2').val(null).trigger('change');
+      // Reset semua input dalam form          
+        //   $('#ip_address').val('');
+        //   $('#nama_whm').val('');
+        //   $('#kodeRak').val('');
+        //   $('#kapasitas').val('');
+        //   $('#tgl_aktif').val('');
+        //   $('#tgl_akhir').val('');
+        //   $('#kondisi').val('');
+        //   $('#lama_ssl').val('');
+        //   $('#keterangan').val('');
       });
-
-      $('[data-mask]').inputmask();
-
-  });
-</script>
-
-// Modal Detail
-<script> 
-    $(document).on('click', '#showDetail', function(){
-      
-      let id = $(this).data('id');
-      var editURL = $(this).data('url');
-      // alert(editURL);
-      $.get(editURL, function(data){
-            // const ipa = JSON.stringify(data);
-          var cek = data[0]['no_surat'];
-            // console.log(data);
-            
-          const tglsrt = data[0]['tgl_surat'];
-          var options = { year: "numeric", month: "numeric", day: "numeric" };
-          const ftglsurat = new Date(tglsrt).toLocaleDateString('es-CL', options); 
-          $('#modal-detail #file_lama').html('');
-          $('#modal-detail').modal('show');
-          $('#modal-detail #no_mohon').val(data[0]['no_mohon']);
-          $('#modal-detail #kotama').val(data[0]['ur_ktm']);
-          $('#modal-detail #satuan').val(data[0]['ur_smkl']);
-          $('#modal-detail #no_surat').val(data[0]['no_surat']);
-          $('#modal-detail #tgl_surat').val(ftglsurat);
-          $('#modal-detail #perihal').val(data[0]['perihal']);
-          $('#modal-detail #utk_satuan').val(data[0]['utk_smkl']);
-          $('#modal-detail #nm_domain').val(data[0]['nm_domain']);
-          $('#modal-detail #id_domain').val(data[0]['id_domain']);
-		      $('#modal-detail #nama_file').val(data[0]['file_surat']);
-          $('#modal-detail #nama_dom').val(data[0]['nama_domain']);
-          $('#modal-detail #hosting').val(data[0]['hosting']);
-          $('#modal-detail #framework').val(data[0]['framework']);
-          $('#modal-detail #sts_dom').val(data[0]['sts_dom'] == 'E' ? 'Error' : data[0]['sts_dom'] == 'R' ? 'Running' : data[0]['sts_dom'] == 'M' ? 'Maintenance' : data[0]['sts_dom'] == 'S' ? 'Suspend' : 'Unknown');
-          const tglaktif = data[0]['tgl_akt'];
-          const faktif = tglaktif ? new Date(tglaktif).toLocaleDateString('es-CL', options) : '';
-          $('#modal-detail #tgl_aktif').val(faktif);
-          $('#modal-detail #ket_dom').val(data[0]['ket_dom']);
-        //   if(data[0]['file_surat']) {
-        //     $('#modal-update #file_lama').html(
-        //         '<button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/') }}/'+data[0]['file_surat']+'"><i class="fas fa-file"></i></button>'
-        //     );
-        // } else {
-        //     $('#modal-update #file_lama').html('Tidak ada file');
-        // }
-          if(data[0]['file_surat']) {
-            $('#modal-detail #file_lama').append('<button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/') }}/'+data[0]['file_surat']+'"><i class="fas fa-file"></i></button>');
-          } else {
-              $('#modal-detail #file_lama').html('<p class="text-red">Tidak ada file</p>'); 
-          }
-          
-          if(data[0]['status'] == '1'){
-            $('#modal-detail #status').val('Proses');
-          } else if(data[0]['status'] == '2'){
-            $('#modal-detail #status').val('Selesai');
-          } else {
-            $('#modal-detail #status').val('Unknown');
-          }
-          $('#modal-detail #klasifikasi').val(data[0]['klasifikasi'] == 'u' ? 'Urgent/Mendesak' : (data[0]['klasifikasi'] == 'i' ? 'Important/Penting' : ''));        
-      })  
-    });
-</script>
-
-// Modal Update
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('body').on('click', '#viewMessage', function(){
-        var editURL = $(this).data('url');
-        $.get(editURL, function(data){
-            console.log(data);
-            var sts = data[0].status;
-            // alert(sta);
-            
-          $('#modal-update #file_lama').html('');
-          $('#modal-update').modal('show');
-          $('#modal-update #no_mohon').val(data[0].no_mohon);
-          $('#modal-update #kotama').val(data[0].kd_ktm);
-          $('#modal-update #satuan').val(data[0].kd_smkl).trigger('change');
-          $('#modal-update #no_surat').val(data[0].no_surat);
-          $('#modal-update #tgl_surat').val(data[0].tgl_surat);
-          $('#modal-update #perihal').val(data[0].perihal);
-          $('#modal-update #utk_satuan').val(data[0].utk_satuan).trigger('change');
-          $('#modal-update #nm_domain').val(data[0].nm_domain);
-          $('#modal-update #id_domain').val(data[0].id_domain).trigger('change');
-          $('#modal-update #nama_file').html(data[0].file_surat);
-
-          if(data[0].file_surat) {
-            $('#modal-update #file_lama').append('<button class="btn btn-primary btn-view-file" data-file-url="{{ asset('storage/files/') }}/'+data[0].file_surat+'"><i class="fas fa-file"></i></button>');
-          } else {
-              $('#modal-update #file_lama').html('Tidak ada file');
-          }
-
-          $('#modal-update #id').val(data[0].id);
-
-          if(data[0].status == '1'){
-              $("#modal-update #s1").prop("checked",true);
-          }else if(data[0].status == '2'){
-              $("#modal-update #s2").prop("checked",true);
-          }else{
-              $("#modal-update #s3").prop("checked",true);
-          }
-          $('#modal-update #klasifikasi').val(data[0].klasifikasi);
-          $('#modal-update #dataTemp').val(JSON.stringify(data));
-        })
-    });
   });
 </script>
 <script type="text/javascript">

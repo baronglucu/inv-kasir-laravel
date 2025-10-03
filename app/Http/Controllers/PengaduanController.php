@@ -6,6 +6,8 @@ use App\Models\Domain;
 use App\Models\Pengaduan;
 use App\Models\Tbkotama;
 use App\Models\Tbsatminkal;
+USE App\Models\TbWhm;
+use App\Models\Rakserver;
 use Auth;
 use DB;
 use File;
@@ -35,7 +37,7 @@ class PengaduanController extends Controller
                     ->select('pengaduans.*', 'domains.nama_domain', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl')
                     ->orderBy('pengaduans.tgl_laporan', 'asc')
                     ->get();
-
+            
         if($alat){
             return view('admin.pengaduan.index', compact('title','subtitle', 'kotama', 'satuan', 'domain', 'alat'));
         } else {
@@ -137,8 +139,28 @@ class PengaduanController extends Controller
      */
     public function show($id)
     {
+
+        $dataRak = DB::table('tb_whms')
+                   ->leftJoin('rakservers', 'tb_whms.kodeRak', '=', 'rakservers.kodeRak')
+                   ->select('tb_whms.*', 
+                    'rakservers.namaRak'
+                    );      
+        
+        $dataDom = DB::table('domains')
+                   ->joinSub($dataRak, 'data_rak', function ($join) {
+                    $join->on('domains.id_whm', '=', 'data_rak.id');
+                     })
+                   ->select('domains.*', 
+                    'data_rak.id as idwhm',
+                    'data_rak.ip_address',
+                    'data_rak.nama_whm',
+                    'data_rak.namaRak'
+                    );
+        
         $alat       = DB::table('pengaduans')
-                    ->leftJoin('domains', 'domains.id', '=', 'pengaduans.id_domain')
+                    ->joinSub($dataDom, 'data_dom', function ($join) {
+                    $join->on('pengaduans.id_domain', '=', 'data_dom.id');
+                     })
                     ->leftJoin('tbkotamas', 'pengaduans.kd_ktm', '=', 'tbkotamas.kd_ktm')
                     ->leftJoin('tbsatminkals', function($join)
                          {
@@ -146,7 +168,11 @@ class PengaduanController extends Controller
                              $join->on('pengaduans.kd_smkl','=', 'tbsatminkals.idsmkl');
                          })
                     ->where('pengaduans.id','=',$id)
-                    ->select('pengaduans.*', 'domains.nama_domain', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl')                    
+                    ->select('pengaduans.*', 
+                    'tbkotamas.ur_ktm', 
+                    'tbsatminkals.ur_smkl',
+                    'data_dom.*'
+                    )                    
                     ->get();
         
         return response()->json( $alat);

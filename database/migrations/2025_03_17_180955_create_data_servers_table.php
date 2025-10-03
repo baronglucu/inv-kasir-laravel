@@ -9,26 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // RAM : Socket : Core, Storage : Slot, BIOS, 
     public function up(): void
     {
         Schema::create('data_servers', function (Blueprint $table) {
             $table->id();
-            $table->string('serialNumber');
-            $table->string('merk');
-            $table->string('model');
-            $table->string('kapasitas');
-            $table->foreignId('kodeRak');
-            $table->string('ip_address');
-            $table->string('kondisi'); 
-            $table->date('tgl_aktif');
-            $table->string('sistemOperasi');
-            $table->string('peruntukan');   
-            $table->string('kd_ktm')->nullable();
-            $table->string('kd_smkl')->nullable();
-            $table->string('status');
-            $table->foreignId('id_mitra')->nullable();
-            $table->string('keterangan')->nullable();
-            $table->foreignId('user_id');            
+            $table->string('serialNumber', 30);
+            $table->string('sisops', 100)->nullable();
+            $table->integer('socket');
+            $table->integer('core');
+            $table->integer('slot');
+            $table->string('bios', 50)->nullable();
+            $table->string('scsi', 2)->nullable();
+            $table->integer('hdisk')->nullable();
+            $table->text('descrip')->nullable();
+            $table->unsignedBigInteger('user_id');            
             $table->timestamps();
         });
     }

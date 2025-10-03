@@ -59,30 +59,38 @@
                         {{ session('success') }}
                     </div>
                 @endif --}}
+                
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Domain</th>
-                            <th>Hosting</th>
-                            <th>Framework</th>    
-                            <th>cPanel/WHM</th> 
-                            <th>Status</th> 
+                            <th>ID Aplikasi</th>
+                            <th>Nama Aplikasi</th>
+                            <th>IP Address</th>
+                            <th>Nama Domain</th>    
+                            <th>Thn P'ada</th> 
                             <th>Tgl Aktif</th> 
+                            <th>Status</th> 
                             <th>Kotama</th>
-                            <th>Satuan</th>                        
+                            <th>Satuan</th> 
+                            <th>Bin LKT</th>   
+                            <th>Layanan Jaringan</th>    
+                            <th>Fungsi</th>   
+                            <th>Mitra</th>             
                             <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($alat as $item)
+                        @foreach ($dataapl as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->nama_domain }}</td>
-                                <td>{{ $item->hosting }}</td>
-                                <td>{{ $item->framework }}</td>                                
-                                <td>{{ $item->nama_whm }}</td> 
+                                <td>{{ $item->id_apl }}</td>
+                                <td>{{ $item->nama_apl }}</td>
+                                <td>{{ $item->ip_add }}</td>
+                                <td>{{ $item->nm_dom }}</td>
+                                <td>{{ $item->thn_ada }}</td> 
+                                <td>{{ date('d-m-Y', strtotime( $item->tgl_aktif )) }}</td>
                                 <td>
                                     @if ( $item->status == 'E' )
                                         <span class="badge badge-warning"> Error </span>
@@ -96,26 +104,21 @@
                                     @if (  $item->status == 'S' )
                                     <span class="badge badge-danger"> Suspended </span>
                                 @endif
-                                </td>                               
-                                <td>{{ date('d-m-Y', strtotime( $item->tgl_aktif )) }}</td>
-                                {{-- <td>
-                                    @if ( $item->posisi == '1' )
-                                        <span> Dalam Pusat Data </span>
-                                    @endif
-                                    @if (  $item->posisi == '2' )
-                                        <span> Luar Pusat Data </span>
-                                    @endif
-                                </td> --}}
+                                </td>
                                 <td>{{ $item->ur_ktm }}</td>
-                                <td>{{ $item->ur_smkl }}</td>                           
+                                <td>{{ $item->ur_smkl }}</td>     
+                                <td>{{ $item->lkt }}</td>
+                                <td>{{ $item->jaringan }}</td>   
+                                <td>{{ $item->fungsi }}</td>
+                                <td>{{ $item->nama_mitra }}</td>                   
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('domain.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('aplsisfo.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
                                     &nbsp;
-                                    <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('domain.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
+                                    <a href="javascript:void(0)" id="showUpdate" data-url="{{ route('aplsisfo.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;
-                                    <form id="delete-form-{{ $item->id }}" action="{{ route('domain.destroy', $item->id) }}" method="POST">
+                                    <form id="delete-form-{{ $item->id }}" action="{{ route('aplsisfo.destroy', $item->id) }}" method="POST">
                                       @csrf
                                       @method('DELETE')
                                       <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})"><i class="fas fa-trash" value="Hapus Item"></i></button>
@@ -150,17 +153,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group"> 
-                            <label for="nama_domain">Nama Domain</label>
-                            <input type="text" class="form-control" name="nama_domain" id="nama_domain" required>
-                            
-                                        <label for="hosting">Hosting</label>
-                                        <input type="text" id="hosting" name="hosting" class="form-control" required>
-                             
-                                        <label for="framework">Framework</label>
-                                        <input type="text" id="framework" name="framework" class="form-control" required>
-                                 
+                            <label for="id_apl">ID Apl/Sisfo</label>
+                            <input type="text" class="form-control" name="id_apl" id="id_apl" required>
+                            <label for="nama_apl">Nama Apl/Sisfo</label>
+                            <input type="text" id="nama_apl" name="nama_apl" class="form-control" required>
                             <div class="form-group">
-                                <div class="row">
+                                <div class="row">                                    
+                                    <div class="col-md-6">
+                                      <label for="ip_add">IP Address</label>
+                                      <input type="text" id="ip_add" name="ip_add" class="form-control" required>
+                                    </div>
                                     <div class="col-md-6">
                                         <label for="status">Status</label>
                                         <select class="form-control" id="status" name="status" style="width: 100%;">
@@ -170,45 +172,41 @@
                                             <option value="S">Suspended</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="id_whm">cPanel/WHM</label>
-                                        <select class="form-control select2" style="width: 100%;" id="id_whm" name="id_whm" >
-                                        <option value="">--- Pilih ---</option>
-                                            @foreach ($whm as $w)
-                                            <option value="{{$w->id}}">
-                                                {{$w->nama_whm}}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </div>                                
                                 </div>
                             </div>
+                            <label for="nm_dom">Nama Domain</label>
+                            <input type="text" id="nm_dom" name="nm_dom" class="form-control">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                      <label for="thn_ada">Thn Pengadaan</label>
+                                      {{-- <select id="thn_ada" name="thn_ada" class="form-control"></select> --}}
+                                      <input type="number" class="form-control @error('thn_ada') is-invalid @enderror" id="thn_ada" name="thn_ada" min="1999" max="2030" step="1" value="{{ old('thn_ada') }}" placeholder="1999" required>
+                                    {{-- <input type="text" class="form-control id="thn_ada" name="thn_ada" required> --}}
+                                      @error('thn_ada')
+                                        <div class="invalid-feedback">
+                                                {{ $message }}
+                                        </div>
+                                       @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label for="tgl_aktif">Tanggal Aktif</label>
+                                      <input type="date" class="form-control @error('tgl_aktif') is-invalid @enderror" id="tgl_aktif" name="tgl_aktif" data-date-format="dd/mm/yyyy" value="{{ old('tgl_aktif') }}" required>
+                                    
+                                      @error('tgl_aktif')
+                                        <div class="invalid-feedback">
+                                                {{ $message }}
+                                        </div>
+                                       @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="fungsi">Peruntukan</label>
+                            <input type="text" id="fungsi" name="fungsi" class="form-control" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-0">
-                            <div class="row"> 
-                                <div class="col-md-6">
-                                    <label for="tgl_aktif">Tanggal Aktif</label>
-                                    <input type="date" class="form-control @error('tgl_aktif') is-invalid @enderror" id="tgl_aktif" name="tgl_aktif" data-date-format="dd/mm/yyyy" value="{{ old('tgl_aktif') }}" required>
-                                    
-                                        @error('tgl_aktif')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                </div>
-                                <div class="col-md-6">
-                                        {{-- <label for="posisi">Posisi/Tempat</label>
-                                        <select class="form-control" style="width: 100%;" id="posisi" name="posisi" >
-                                            <option value="">--- Pilih ---</option>
-                                            <option value="1">Dalam Pusat Data</option>
-                                            <option value="2">Luar Pusat Data</option>  
-                                          </select> --}}
-                                </div>
-                            </div>
-
-                            
                             <label for="kotama">Kotama</label>
                             <select class="form-control select2" id="kotama" name="kotama">
                                 <option value="" selected="selected"></option>
@@ -219,11 +217,22 @@
                             <label for="satuan">Satuan</label>
                             <select class="form-control select2" id="satuan" name="satuan">
                                 <option value="" selected="selected"></option>
-                            </select>            
+                            </select>
+                            <label for="lkt">Bin LKT</label>
+                            <input type="text" id="lkt" name="lkt" class="form-control">
+                            <label for="jaringan">Layanan Jarkomta</label>
+                            <input type="text" id="jaringan" name="jaringan" class="form-control" required>
+                            <label for="id_mitra">Mitra/Pengembang</label>
+                            <select class="form-control select2" id="id_mitra" name="id_mitra">
+                                <option value="" selected="selected"></option>
+                                @foreach ($mitra as $mit)
+                                <option value="{{$mit->id_mitra}}">{{$mit->nama_mitra}}</option>2
+                                @endforeach
+                            </select> 
                             <label for="keterangan">Keterangan</label>
-                            <textarea class="form-control" id="keterangan" name="keterangan" rows="4"></textarea>
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
+                        </div>
                     </div>
-                  </div>
                 </div>
                 <div class="mt-3" >
                     <button type="submit" class="btn btn-outline-light float-sm-right"><i class="fas fa-save"></i> Simpan</button>
@@ -241,8 +250,8 @@
     <!-- /.modal-dialog -->
   </div>
 
-  <!-- /.modal detail data -->
-  <div class="modal fade" id="modal-detail" tabindex="-1" data-focus="false"  role="dialog" >
+  <!-- /.modal-detail -->
+  <div class="modal fade" id="modal-detail" tabindex="-1" data-focus="false" role="dialog">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -251,58 +260,64 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <span id="coba"></span>
         <div class="modal-body">
-          <form id="form-detail-domain" method="PUT">
+          <form id="form-detail" method="POST">
             <div class="card-body">
                 <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group"> 
-                      <input type="hidden" value="" name="id" id="id" />
-                        <label for="nama_domain">Nama Domain</label>
-                        <input type="text" class="form-control" name="nama_domain" id="nama_domain" disabled>
-                        <label for="hosting">Hosting</label>
-                        <input type="text" id="hosting" name="hosting" class="form-control" disabled>
-                        <label for="framework">Framework</label>
-                        <input type="text" id="framework" name="framework" class="form-control" disabled>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="status">Status</label>
-                                    <input type="text" id="status" name="status" class="form-control" disabled>
+                    <div class="col-md-6">
+                        <div class="form-group"> 
+                            <label for="id_apl">ID Apl/Sisfo</label>
+                            <input type="text" class="form-control" name="id_apl" id="id_apl" disabled>
+                            <label for="nama_apl">Nama Apl/Sisfo</label>
+                            <input type="text" id="nama_apl" name="nama_apl" class="form-control" disabled>
+                            <div class="form-group">
+                                <div class="row">                                    
+                                    <div class="col-md-6">
+                                      <label for="ip_add">IP Address</label>
+                                      <input type="text" id="ip_add" name="ip_add" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="status">Status</label>
+                                        <input type="text" id="status" name="status" class="form-control" disabled>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="id_whm">cPanel/WHM</label>
-                                    <input type="text" id="id_whm" name="id_whm" class="form-control" disabled>
-                                </div>                                
                             </div>
+                            <label for="nm_dom">Nama Domain</label>
+                            <input type="text" id="nm_dom" name="nm_dom" class="form-control" disabled>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                      <label for="thn_ada">Thn Pengadaan</label>
+                                      <input type="number" class="form-control" name="thn_ada" id="thn_ada" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <label for="tgl_aktif">Tanggal Aktif</label>
+                                      <input type="text" class="form-control" id="tgl_aktif" name="tgl_aktif" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="fungsi">Peruntukan</label>
+                            <input type="text" id="fungsi" name="fungsi" class="form-control" disabled>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-0"> 
-                        <div class="row">                       
-                          <div class="col-md-6">
-                              <label for="tgl_aktif">Tanggal Aktif</label>
-                              <input type="date" class="form-control @error('tgl_aktif') is-invalid @enderror" id="tgl_aktif" name="tgl_aktif" data-date-format="dd/mm/yyyy" value="{{ old('tgl_aktif') }}" disabled>
-                          </div>
-                          <div class="col-md-6">
-                                        
-                          </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-0">
+                            <label for="kotama">Kotama</label>
+                            <input type="text" id="kotama" name="kotama" class="form-control" disabled>
+                            <label for="satuan">Satuan</label>
+                            <input type="text" id="satuan" name="satuan" class="form-control" disabled>
+                            <label for="lkt">Bin LKT</label>
+                            <input type="text" id="lkt" name="lkt" class="form-control" disabled>
+                            <label for="jaringan">Layanan Jarkomta</label>
+                            <input type="text" id="jaringan" name="jaringan" class="form-control" disabled>
+                            <label for="id_mitra">Mitra/Pengembang</label>
+                            <input type="text" id="nama_mitra" name="nama_mitra" class="form-control" disabled> 
+                            <label for="keterangan">Keterangan</label>
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3" disabled></textarea>
                         </div>
-                      </div>
-                        <label for="kotama">Kotama</label>
-
-                        <input type="text" id="kotama" name="kotama" class="form-control" disabled>
-                                
-                        <label for="id_whm">Satuan</label>
-                        <input type="text" id="satuan" name="satuan" class="form-control" disabled>
-
-                        <label for="keterangan">Keterangan</label>
-                        <textarea class="form-control" id="keterangan" name="keterangan" rows="3" disabled></textarea>
                     </div>
-                </div>
-              </div>             
+                </div>              
+            </div>
           </form>
         </div>
         <div class="modal-footer justify-content-center">
@@ -326,78 +341,95 @@
         </div>
         <span id="coba"></span>
         <div class="modal-body">
-          <form id="form-update-domain" method="PUT">
+          <form id="form-update-aplsisfo" method="PUT">
             <div class="card-body">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group"> 
                       <input type="hidden" value="" name="id" id="id" />
-                        <label for="nama_domain">Nama Domain</label>
-                        <input type="text" class="form-control" name="nama_domain" id="nama_domain" required>
-                        <label for="hosting">Hosting</label>
-                        <input type="text" id="hosting" name="hosting" class="form-control" required>
-                        <label for="framework">Framework</label>
-                        <input type="text" id="framework" name="framework" class="form-control" required>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="status">Status</label>
-                                    <select class="form-control" id="status" name="status" style="width: 100%;">
-                                        <option value="E" selected="selected">Error</option>
-                                        <option value="R">Running</option>
-                                        <option value="M">Maintenance</option>
-                                        <option value="S">Suspended</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_whm">cPanel/WHM</label>
-                                    <select class="form-control select2" style="width: 100%;" id="id_whm" name="id_whm" >
-                                    <option value="">--- Pilih ---</option>
-                                        @foreach ($whm as $w)
-                                        <option value="{{$w->id}}">
-                                            {{$w->nama_whm}}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-0">
-                      <div class="row">                       
-                        <div class="col-md-6">
-                          <label for="tgl_aktif">Tanggal Aktif</label>
-                          <input type="date" class="form-control @error('tgl_aktif') is-invalid @enderror" id="tgl_aktif" name="tgl_aktif" data-date-format="dd/mm/yyyy" value="{{ old('tgl_aktif') }}" required>
-                          @error('tgl_aktif')
-                          <div class="invalid-feedback">{{ $message }}</div>
-                          @enderror
-                        </div>
-                        <div class="col-md-6">
-                                        
+                      <label for="id_apl">ID Apl/Sisfo</label>
+                      <input type="text" class="form-control" name="id_apl" id="id_apl" required>
+                      <label for="nama_apl">Nama Apl/Sisfo</label>
+                      <input type="text" id="nama_apl" name="nama_apl" class="form-control" required>
+                      <div class="form-group">
+                        <div class="row">                                    
+                          <div class="col-md-6">
+                            <label for="ip_add">IP Address</label>
+                            <input type="text" id="ip_add" name="ip_add" class="form-control" required>
+                          </div>
+                          <div class="col-md-6">
+                            <label for="status">Status</label>
+                            <select class="form-control" id="status" name="status" style="width: 100%;">
+                              <option value="E" selected="selected">Error</option>
+                              <option value="R">Running</option>
+                              <option value="M">Maintenance</option>
+                              <option value="S">Suspended</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
-
-                        <label for="kotama">Kotama</label>
-                         <select class="form-control select2" id="kotama" name="kotama">
-                            <option value="" selected="selected"></option>
-                            @foreach ($kotama as $kot)
-                            <option value="{{$kot->kd_ktm}}">{{$kot->ur_ktm}}</option>
-                            @endforeach
-                        </select>
-                        <label for="satuan">Satuan</label>
-                        <select class="form-control select2" id="satuan" name="satuan">
-                            <option value="" selected="selected"></option>
-                            @foreach ($satuan as $sat)
-                              <option value="{{$sat->idsmkl}}">{{$sat->ur_smkl}}</option>
-                            @endforeach
-                        </select> 
-                        <label for="keterangan">Keterangan</label>
-                        <textarea class="form-control" id="keterangan" name="keterangan" rows="4"></textarea>
+                      <label for="nm_dom">Nama Domain</label>
+                      <input type="text" id="nm_dom" name="nm_dom" class="form-control">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-md-6">
+                            <label for="thn_ada">Thn Pengadaan</label>
+                              <input type="number" class="form-control @error('thn_ada') is-invalid @enderror" id="thn_ada" name="thn_ada" min="1999" max="2030" step="1" value="{{ old('thn_ada') }}" placeholder="1999" required>
+                                    {{-- <input type="text" class="form-control id="thn_ada" name="thn_ada" required> --}}
+                                      @error('thn_ada')
+                                        <div class="invalid-feedback">
+                                                {{ $message }}
+                                        </div>
+                                       @enderror
+                            </div>
+                            <div class="col-md-6">
+                              <label for="tgl_aktif">Tanggal Aktif</label>
+                              <input type="date" class="form-control @error('tgl_aktif') is-invalid @enderror" id="tgl_aktif" name="tgl_aktif" data-date-format="dd/mm/yyyy" value="{{ old('tgl_aktif') }}" required>
+                                    
+                                      @error('tgl_aktif')
+                                        <div class="invalid-feedback">
+                                                {{ $message }}
+                                        </div>
+                                       @enderror
+                            </div>
+                          </div>
+                        </div>
+                        <label for="fungsi">Peruntukan</label>
+                        <input type="text" id="fungsi" name="fungsi" class="form-control" required>
                     </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group mb-0">
+                       <label for="kotama">Kotama</label>
+                       <select class="form-control select2" id="kotama" name="kotama">
+                        <option value="" selected="selected"></option>
+                                @foreach ($kotama as $kot)
+                        <option value="{{$kot->kd_ktm}}">{{$kot->ur_ktm}}</option>
+                                @endforeach
+                      </select>
+                      <label for="satuan">Satuan</label>
+                      <select class="form-control select2" id="satuan" name="satuan">
+                                <option value="" selected="selected"></option>
+                                @foreach ($satuan as $sat)
+                                <option value="{{$sat->idsmkl}}">{{$sat->ur_smkl}}</option>
+                                @endforeach
+                            </select>
+                      <label for="lkt">Bin LKT</label>
+                      <input type="text" id="lkt" name="lkt" class="form-control">
+                      <label for="jaringan">Layanan Jarkomta</label>
+                      <input type="text" id="jaringan" name="jaringan" class="form-control" required>
+                      <label for="id_mitra">Mitra/Pengembang</label>
+                      <select class="form-control select2" id="id_mitra" name="id_mitra">
+                        <option value="" selected="selected"></option>
+                                @foreach ($mitra as $mit)
+                        <option value="{{$mit->id_mitra}}">{{$mit->nama_mitra}}</option>2
+                                @endforeach
+                      </select> 
+                      <label for="keterangan">Keterangan</label>
+                      <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
+                    </div>
+                  </div>
                 </div>
-            </div>
                 <div class="mt-3" >
                     <button type="submit" class="btn btn-outline-light float-sm-right" id="simpanEdit"><i class="fas fa-save"></i> Simpan</button>
                     <button type="button" id="btnBatal" class="btn btn-outline-light"><i class="fa fa-eraser"></i> Batal</button>
@@ -456,15 +488,33 @@
 <script src="{{ asset('')}}plugins/sweetalert2/sweetalert2.all.min.js"></script>
 <script src="{{ asset('')}}plugins/sweetalert2/sweetalert2.min.js"></script>
 
-<script>
+<script type="text/javascript">
     $(function () {
       $("#example1").DataTable({
         "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "columnDefs": [{ "visible": false, "targets": [ 4, 12, 14] }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>
+<script type="text/javascript">
+  // let thnmulai = 2000;
+  // let thnakhir = new Date().getFullYear();
+  // for (i=thnakhir; i > thnmulai; i--)
+  // {
+  //   $('#modal-tambah #thn_ada').append(('<option/>').val(i).html(i));
+  // }
+  $(document).ready(function() {
+    $("#modal-tambah #thn_ada").datepicker({
+      formmat: "yyyy",
+      viewMode: "years",
+      minViewMode: "years",
+      auticlose: true
+    });
+  });
+</script>
 <script>
+$(document).ready(function() {
     $('#modal-tambah').on('shown.bs.modal', function() {  
         $('#modal-tambah .select2').select2({
             theme: 'bootstrap4',
@@ -478,6 +528,22 @@
             dropdownParent: $('#modal-update')
         });
     });
+});
+
+$(document).ready(function() {
+    // $('#modal-tambah').on('shown.bs.modal', function () {
+    //     $('#modal-tambah .select2').select2('destroy').select2({
+    //         theme: 'bootstrap4',
+    //         dropdownParent: $('#modal-tambah')
+    //     });
+    // });
+    // $('#modal-update').on('shown.bs.modal', function () {
+    //     $('#modal-update .select2').select2('destroy').select2({
+    //         theme: 'bootstrap4',
+    //         dropdownParent: $('#modal-update')
+    //     });
+    // });
+});
 </script>
 <script>
   $('button[name="remove_levels"]').on('click', function(e) {
@@ -529,53 +595,39 @@
           text: '{{ session('swal')['text'] }}',
           confirmButtonText: 'OK'
       }).then(() => {
-          window.location.href = "{{ route('domain.index') }}"; // Redirect setelah OK ditekan
+          window.location.href = "{{ route('aplsisfo.index') }}"; // Redirect setelah OK ditekan
       });
   @endif
 </script>
 <script>
-  $(document).on('click', '#showDetail', function(){
-      
+  
+    $(document).on('click', '#showDetail', function(){
+      let id = $(this).data('id');
       var editURL = $(this).data('url');
-      // alert('idx' + idx + ' dan ' + editURL );
-      // $.ajax({
-      //     url: "{{ route('domain.show', ':id') }}".replace(':id', idx),
-      //     type: 'GET',
-      //     dataType: 'json',
-      //     success: function(data) {
+      // alert(editURL);
       $.get(editURL, function(data){
-            // console.log(data);
-              let statusText = '';
-              if (data[0].status === 'E') {
-                  statusText = 'Error'; 
-              } else if (data[0].status === 'R') {
-                  statusText = 'Running';
-              } else if (data[0].status === 'M') {
-                  statusText = 'Maintenance';
-              } else if (data[0].status === 'S') {
-                  statusText = 'Suspended';
-              } else {
-                  statusText = 'Unknown';
-              }
-
-              $('#modal-detail').modal('show');
-              $('#modal-detail #id').val(data[0].id);
-              $('#modal-detail #nama_domain').val(data[0].nama_domain);
-              $('#modal-detail #hosting').val(data[0].hosting);
-              $('#modal-detail #framework').val(data[0].framework);  
-              $('#modal-detail #status').val(statusText);          
-              $('#modal-detail #id_whm').val(data[0].nama_whm);
-              $('#modal-detail #tgl_aktif').val(data[0].tgl_aktif);
-              $('#modal-detail #kotama').val(data[0].ur_ktm);
-              $('#modal-detail #satuan').val(data[0].ur_smkl).trigger('change');
-              $('#modal-detail #keterangan').val(data[0].keterangan);
-          // },
-          // error: function(xhr, status, error) {
-          //     console.error(xhr);
-          //     alert('Terjadi kesalahan saat mengambil data.');
-          // }
-      });
-  });
+          const tglakt = data[0]['tgl_aktif'];
+          var options = { year: "numeric", month: "numeric", day: "numeric" };
+          const ftglaktif = new Date(tglakt).toLocaleDateString('es-CL', options);
+            console.log(data);
+            $('#modal-detail').modal('show');
+            $('#modal-detail #id').val(data[0]['id']);
+            $('#modal-detail #id_apl').val(data[0]['id_apl']);
+            $('#modal-detail #nama_apl').val(data[0]['nama_apl']);
+            $('#modal-detail #ip_add').val(data[0]['ip_add']);  
+            $('#modal-detail #nm_dom').val(data[0]['nm_dom']);
+            $('#modal-detail #status').val(data[0]['status'] == 'E' ? 'Error' : data[0]['status'] == 'R' ? 'Running' : data[0]['status'] == 'M' ? 'Maintenance' : data[0]['status'] == 'S' ? 'Suspend' : 'Unknown');         
+            $('#modal-detail #thn_ada').val(data[0]['thn_ada']);
+            $('#modal-detail #tgl_aktif').val(ftglaktif);
+            $('#modal-detail #kotama').val(data[0]['ur_ktm']);
+            $('#modal-detail #satuan').val(data[0]['ur_smkl']);
+            $('#modal-detail #lkt').val(data[0]['lkt']);
+            $('#modal-detail #jaringan').val(data[0]['jaringan']);
+            $('#modal-detail #fungsi').val(data[0]['fungsi']);
+            $('#modal-detail #nama_mitra').val(data[0]['nama_mitra']);
+            $('#modal-detail #keterangan').val(data[0]['keterangan']);
+        })
+    });
 </script>
 <script>
   $(document).ready(function() {
@@ -585,7 +637,7 @@
           // alert(dataForm);
           $.ajax({
               type: 'POST',
-              url: "{{ route('domain.store') }}",
+              url: "{{ route('aplsisfo.store') }}",
               data: dataForm,
               dataType: 'json',
               success: function(response) {
@@ -597,7 +649,7 @@
                           text: '{{ session('response.message') }}',
                           confirmButtonText: 'OK'
                         }).then(() => {
-                            window.location.href = "{{ route('domain.index') }}"; // Redirect setelah OK ditekan
+                            window.location.href = "{{ route('aplsisfo.index') }}"; // Redirect setelah OK ditekan
                         });
                   } else {
                       alert(response.message);
@@ -621,14 +673,19 @@
 
       $('#btnClear').click(function() {
       // Reset semua input dalam form
-          $('#nama_domain').val('');
-          $('#hosting').val('');
-          $('#framework').val('');
+          $('#id_apl').val('');
+          $('#nama_apl').val('');
+          $('#ip_add').val('');
           $('#status').val('');
-          $('#id_whm').val('');
+          $('#nm_dom').val('');
+          $('#thn_ada').val('');
           $('#tgl_aktif').val('');
           $('#kotama').val('');
           $('#satuan').val('');
+          $('#lkt').val('');
+          $('#jaringan').val('');
+          $('#fungsi').val('');
+          $('#id_mitra').val('');
           $('#keterangan').val('');
       });
   });
@@ -636,21 +693,26 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-    $('body').on('click', '#viewMessage', function(){
+    $('body').on('click', '#showUpdate', function(){
         var editURL = $(this).data('url');
-        $.get(editURL, function(data){
+      
+      $.get(editURL, function(data){         
             console.log(data);
-            // var cek = data[0].kondisi;
             $('#modal-update').modal('show');
             $('#modal-update #id').val(data[0].id);
-            $('#modal-update #nama_domain').val(data[0].nama_domain);
-            $('#modal-update #hosting').val(data[0].hosting);
-            $('#modal-update #framework').val(data[0].framework);  
-            $('#modal-update #status').val(data[0].status);          
-            $('#modal-update #id_whm').val(data[0].id_whm);
+            $('#modal-update #id_apl').val(data[0].id_apl);
+            $('#modal-update #nama_apl').val(data[0].nama_apl);
+            $('#modal-update #nm_dom').val(data[0].nm_dom);
+            $('#modal-update #ip_add').val(data[0].ip_add);  
+            $('#modal-update #status').val(data[0].status);         
+            $('#modal-update #thn_ada').val(data[0].thn_ada);
             $('#modal-update #tgl_aktif').val(data[0].tgl_aktif);
             $('#modal-update #kotama').val(data[0].kd_ktm);
             $('#modal-update #satuan').val(data[0].kd_smkl).trigger('change');
+            $('#modal-update #lkt').val(data[0].lkt);
+            $('#modal-update #jaringan').val(data[0].jaringan);
+            $('#modal-update #fungsi').val(data[0].fungsi);
+            $('#modal-update #id_mitra').val(data[0].id_mitra);
             $('#modal-update #keterangan').val(data[0].keterangan);
             $('#modal-update #dataTemp').val(JSON.stringify(data));
         })
@@ -659,20 +721,20 @@
 </script>
 <script type="text/javascript">
   $(document).ready(function(){
-    $('#form-update-domain').on('click', '#simpanEdit', function(e){
+    $('#form-update-aplsisfo').on('click', '#simpanEdit', function(e){
           e.preventDefault();
-          var nid = $('#form-update-domain #id').val();
-          dataForm = $('#form-update-domain').serialize() + "&_token={{ csrf_token() }}";
-          // alert(dataForm);    
+          var nid = $('#form-update-aplsisfo #id').val();
+          dataForm = $('#form-update-aplsisfo').serialize() + "&_token={{ csrf_token() }}";
+          console.log(dataForm);    
           $.ajax({
               type: 'PUT',
-              url: "{{ route('domain.update', ':id') }}".replace(':id', nid),
+              url: "{{ route('aplsisfo.update', ':id') }}".replace(':id', nid),
               data: dataForm,
               dataType: 'json',
               success: function(response) {
                     if(response.status == 200) {
                         alert(response.pesan);
-                        window.location.href = "{{ route('domain.index') }}";
+                        window.location.href = "{{ route('aplsisfo.index') }}";
                     } else {
                         // alert(response.pesan);
                         alert('berhasil, tapi tidak tersimpan');
@@ -693,15 +755,15 @@
       var myObject = JSON.parse( $('#modal-update #dataTemp').val());
       // alert(myObject['serialNumber']);
         $('#modal-update').modal('show');
-        $('#modal-update #nama_domain').val(myObject['nama_domain']);
-        $('#modal-update #hosting').val(myObject['hosting']);
-        $("#modal-update #framework").val(myObject['framework']);  
-        $('#modal-update #status').val(myObject['status']);          
-        $('#modal-update #id_whm').val(myObject['id_whm']);
-        $("#modal-update #tgl_aktif").val(myObject['tgl_aktif']);
-        $('#modal-update #kotama').val(myObject['kd_ktm']);
-        $('#modal-update #satuan').val(myObject['kd_smkl']);
-        $('#modal-update #keterangan').val(myObject['keterangan']);
+        // $('#modal-update #nama_domain').val(myObject['nama_domain']);
+        // $('#modal-update #hosting').val(myObject['hosting']);
+        // $("#modal-update #framework").val(myObject['framework']);  
+        // $('#modal-update #status').val(myObject['status']);          
+        // $('#modal-update #id_whm').val(myObject['id_whm']);
+        // $("#modal-update #tgl_aktif").val(myObject['tgl_aktif']);
+        // $('#modal-update #kotama').val(myObject['kd_ktm']);
+        // $('#modal-update #satuan').val(myObject['kd_smkl']);
+        // $('#modal-update #keterangan').val(myObject['keterangan']);
       });
   });
 </script>

@@ -64,7 +64,7 @@
                         <tr>
                             <th>No</th>
                             <th>Serial Number</th>
-                            <th>Merk Server</th>
+                            <th>Merk</th>
                             <th>Model</th>
                             <th>Kapasitas</th>  
                             <th>Storage</th>
@@ -125,11 +125,11 @@
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('server.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm  btn-primary"><i class="fas fa-eye"></i></button>
+                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('perangkat.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm  btn-primary"><i class="fas fa-eye"></i></button>
                                     &nbsp;
-                                    <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('server.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
+                                    <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('perangkat.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;
-                                    <form id="delete-form-{{ $item->id }}" action="{{ route('server.destroy', $item->id) }}" method="POST">
+                                    <form id="delete-form-{{ $item->id }}" action="{{ route('perangkat.destroy', $item->id) }}" method="POST">
                                       @csrf
                                       @method('DELETE')
                                       <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})"><i class="fas fa-trash" value="Hapus Item"></i></button>
@@ -159,7 +159,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="form-create-server" method="POST">
+          <form id="form-create-perangkat" method="POST">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -335,7 +335,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="form-detail-server" method="PUT">
+          <form id="form-detail-perangkat" method="PUT">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -344,7 +344,7 @@
                             <input type="text" class="form-control" name="serialNumber" id="serialNumber" readonly>
                             <label for="merk">Merk</label>
                             <input type="text" id="merk" name="merk" class="form-control" disabled>
-                            <div class="form-group">
+                            <div class="form-group mb-1">
                                 <div class="row">
                                   <div class="col-md-6">
                                       <label for="kapasitas">Kapasitas</label>
@@ -356,7 +356,7 @@
                                   </div>                                    
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-1">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="model">Model</label>
@@ -375,7 +375,7 @@
                                     </div>                                
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-1">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="ip_address" class="form-label">IP Address</label>
@@ -394,7 +394,7 @@
                                 </div>
                             </div>
                             <label for="kondisi">Kondisi</label>
-                            <div class="card card-light card-outline">
+                            <div class="card card-light card-outline mb-1">
                               <div class="card-body">
                                 <div class="custom-control custom-radio d-inline col-md-3">
                                   <input class="custom-control-input custom-control-input-success" type="radio" id="bb" name="kondisi" value="bb">
@@ -476,7 +476,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="form-update-server" method="PUT">
+          <form id="form-update-perangkat" method="PUT">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -485,7 +485,7 @@
                             <input type="text" class="form-control" name="serialNumber" id="serialNumber" readonly>
                             <label for="merk">Merk</label>
                             <input type="text" id="merk" name="merk" class="form-control" required>
-                            <div class="form-group">
+                            <div class="form-group mb-1">
                                 <div class="row">
                                   <div class="col-md-6">
                                       <label for="kapasitas">Kapasitas</label>
@@ -497,7 +497,7 @@
                                   </div>                                    
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-1">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="model">Model</label>
@@ -516,7 +516,7 @@
                                     </div>                                
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-1">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="ip_address" class="form-label">IP Address</label>
@@ -535,7 +535,7 @@
                                 </div>
                             </div>
                             <label for="kondisi">Kondisi</label>
-                            <div class="card card-light card-outline">
+                            <div class="card card-light card-outline mb-1">
                               <div class="card-body">
                                 <div class="custom-control custom-radio d-inline col-md-3">
                                   <input class="custom-control-input custom-control-input-success" type="radio" id="bb" name="kondisi" value="bb" checked>
@@ -728,7 +728,7 @@
           text: '{{ session('swal')['text'] }}',
           confirmButtonText: 'OK'
       }).then(() => {
-          window.location.href = "{{ route('server.index') }}"; // Redirect setelah OK ditekan
+          window.location.href = "{{ route('perangkat.index') }}"; // Redirect setelah OK ditekan
       });
   @endif
 </script>
@@ -738,45 +738,47 @@
         var editURL = $(this).data('url');
         $.get(editURL, function(data){
             console.log(data);
-            var cek = data.kondisi;
+            var cek = data[0].kondisi;
             var sta = '';
+            // alert(data[0].serialNumber);
             $('#modal-detail').modal('show');
-            $('#modal-detail #id').val(data.id);
-            $('#modal-detail #serialNumber').val(data.serialNumber);
-            $('#modal-detail #ip_address').val(data.ip_address);
-            $('#modal-detail #merk').val(data.merk);
-            $('#modal-detail #model').val(data.model);
-            $("#modal-detail #kodeRak").val(data.kodeRak);            
-            $('#modal-detail #kapasitas').val(data.kapasitas);
-            $("#modal-detail #tgl_aktif").val(data.tgl_aktif);
-            $('#modal-detail #sistemOperasi').val(data.sistemOperasi);
-            if(data.status === 'A' ? sta = "Aktif" : sta ="Non Aktif");
+            $('#modal-detail #id').val(data[0].id);
+            $('#modal-detail #serialNumber').val(data[0].serialNumber);
+            $('#modal-detail #ip_address').val(data[0].ip_address);
+            $('#modal-detail #merk').val(data[0].merk);
+            $('#modal-detail #model').val(data[0].model);
+            $("#modal-detail #kodeRak").val(data[0].kodeRak);            
+            $('#modal-detail #kapasitas').val(data[0].kapasitas);
+            $('#modal-detail #storage').val(data[0].storage);
+            $("#modal-detail #tgl_aktif").val(data[0].tgl_aktif);
+            $('#modal-detail #sistemOperasi').val(data[0].sistemOperasi);
+            if(data[0].status === 'A' ? sta = "Aktif" : sta ="Non Aktif");
             $('#modal-detail #status').val(sta);
-            $('#modal-detail #peruntukan').val(data.peruntukan);
-            $('#modal-detail #kotama').val(data.kd_ktm);
-            $('#modal-detail #satuan').val(data.kd_smkl);
-            $('#modal-detail #id_mitra').val(data.id_mitra);
+            $('#modal-detail #peruntukan').val(data[0].peruntukan);
+            $('#modal-detail #kotama').val(data[0].kd_ktm);
+            $('#modal-detail #satuan').val(data[0].kd_smkl);
+            $('#modal-detail #id_mitra').val(data[0].id_mitra);
             if(cek == 'bb'){
-              $("#modal-detail #bb1").prop("checked",true);
+              $("#modal-detail #bb").prop("checked",true);
             }else if(cek == 'rr'){
-              $("#modal-detail #rr1").prop("checked",true);
+              $("#modal-detail #rr").prop("checked",true);
             }else if(cek == 'rb'){
-              $("#modal-detail #rb1").prop("checked",true);
+              $("#modal-detail #rb").prop("checked",true);
             } 
-            $('#modal-detail #keterangan').val(data.keterangan);
+            $('#modal-detail #keterangan').val(data[0].keterangan);
             $('#modal-detail #dataTemp').val(JSON.stringify(data));
         })
     });
 </script>
 <script>
   $(document).ready(function() {
-      $('#form-create-server').submit(function(e) {
+      $('#form-create-perangkat').submit(function(e) {
           e.preventDefault();
           dataForm = $(this).serialize() + "&_token={{ csrf_token() }}";  
           // alert(dataForm);
           $.ajax({
               type: 'POST',
-              url: "{{ route('server.store') }}",
+              url: "{{ route('perangkat.store') }}",
               data: dataForm,
               dataType: 'json',
               success: function(response) {
@@ -788,7 +790,7 @@
                           text: '{{ session('response.message') }}',
                           confirmButtonText: 'OK'
                         }).then(() => {
-                            window.location.href = "{{ route('server.index') }}"; // Redirect setelah OK ditekan
+                            window.location.href = "{{ route('perangkat.index') }}"; // Redirect setelah OK ditekan
                         });
                   } else {
                       alert(response.message);
@@ -804,7 +806,7 @@
                       });
                       alert(errorMessage);
                   } else {
-                      alert('Terjadi kesalahan! Nama server ada yang sama, Silakan coba lagi.');
+                      alert('Terjadi kesalahan! No perangkat ada yang sama, Silakan coba lagi.');
                   }
               }
           });
@@ -837,30 +839,31 @@
         var editURL = $(this).data('url');
         $.get(editURL, function(data){
             // console.log(data);
-            var cek = data.kondisi;
+            var cek = data[0].kondisi;
             $('#modal-update').modal('show');
-            $('#modal-update #id').val(data.id);
-            $('#modal-update #serialNumber').val(data.serialNumber);
-            $('#modal-update #ip_address').val(data.ip_address);
-            $('#modal-update #merk').val(data.merk);
-            $('#modal-update #model').val(data.model);
-            $("#modal-update #kodeRak").val(data.kodeRak);            
-            $('#modal-update #kapasitas').val(data.kapasitas);
-            $("#modal-update #tgl_aktif").val(data.tgl_aktif);
-            $('#modal-update #sistemOperasi').val(data.sistemOperasi);
-            $('#modal-update #status').val(data.status);
-            $('#modal-update #peruntukan').val(data.peruntukan);
-            $('#modal-update #kotama').val(data.kd_ktm);
-            $('#modal-update #satuan').val(data.kd_smkl);
-            $('#modal-update #id_mitra').val(data.id_mitra);
+            $('#modal-update #id').val(data[0].id);
+            $('#modal-update #serialNumber').val(data[0].serialNumber);
+            $('#modal-update #ip_address').val(data[0].ip_address);
+            $('#modal-update #merk').val(data[0].merk);
+            $('#modal-update #model').val(data[0].model);
+            $("#modal-update #kodeRak").val(data[0].kodeRak);            
+            $('#modal-update #kapasitas').val(data[0].kapasitas);
+            $('#modal-update #storage').val(data[0].storage);
+            $("#modal-update #tgl_aktif").val(data[0].tgl_aktif);
+            $('#modal-update #sistemOperasi').val(data[0].sistemOperasi);
+            $('#modal-update #status').val(data[0].status);
+            $('#modal-update #peruntukan').val(data[0].peruntukan);
+            $('#modal-update #kotama').val(data[0].kd_ktm);
+            $('#modal-update #satuan').val(data[0].kd_smkl);
+            $('#modal-update #id_mitra').val(data[0].id_mitra);
             if(cek == 'bb'){
-              $("#modal-update #bb1").prop("checked",true);
+              $("#modal-update #bb").prop("checked",true);
             }else if(cek == 'rr'){
-              $("#modal-update #rr1").prop("checked",true);
+              $("#modal-update #rr").prop("checked",true);
             }else if(cek == 'rb'){
-              $("#modal-update #rb1").prop("checked",true);
+              $("#modal-update #rb").prop("checked",true);
             } 
-            $('#modal-update #keterangan').val(data.keterangan);
+            $('#modal-update #keterangan').val(data[0].keterangan);
             $('#modal-update #dataTemp').val(JSON.stringify(data));
         })
     });
@@ -868,20 +871,20 @@
 </script>
 <script type="text/javascript">
   $(document).ready(function(){
-    $('#form-update-server').on('click', '#simpanEdit', function(e){
+    $('#form-update-perangkat').on('click', '#simpanEdit', function(e){
           e.preventDefault();
-          var nid = $('#form-update-server #id').val();
-          dataForm = $('#form-update-server').serialize() + "&_token={{ csrf_token() }}";
+          var nid = $('#form-update-perangkat #id').val();
+          dataForm = $('#form-update-perangkat').serialize() + "&_token={{ csrf_token() }}";
           // alert(dataForm);    
           $.ajax({
               type: 'PUT',
-              url: "{{ route('server.update', ':id') }}".replace(':id', nid),
+              url: "{{ route('perangkat.update', ':id') }}".replace(':id', nid),
               data: dataForm,
               dataType: 'json',
               success: function(response) {
                     if(response.status == 200) {
                         alert(response.pesan);
-                        window.location.href = "{{ route('server.index') }}";
+                        window.location.href = "{{ route('perangkat.index') }}";
                     } else {
                         // alert(response.pesan);
                         alert('berhasil, tapi tidak tersimpan');
@@ -904,6 +907,7 @@
           $('#modal-update #merk').val(myObject['merk']);
           $("#modal-update #model").val(myObject['model']);          
           $("#modal-update #kapasitas").val(myObject['kapasitas']);
+          $('#modal-update #storage').val(myObject['storage']);
           $("#modal-update #kodeRak").val(myObject['kodeRak']);
           $("#modal-update #ip_address").val(myObject['ip_address']);
           $("#modal-update #tgl_aktif").val(myObject['tgl_aktif']);

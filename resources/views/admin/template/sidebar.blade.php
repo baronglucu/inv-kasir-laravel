@@ -36,11 +36,9 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-              </p>
+            <a href="{{ route('dashboard') }}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Dashboard</p>
             </a>
           </li>
                    
@@ -72,9 +70,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('server.index') }}" class="nav-link">
+                <a href="{{ route('perangkat.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Data Server</p>
+                  <p>Data Perangkat</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -83,6 +81,18 @@
                   <p>Data Domain</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('aplsisfo.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Data Sisfo/Aplikasi</p>
+                </a>
+              </li>
+              {{-- <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p><code>Data Perangkat</code></p>
+                </a>
+              </li> --}}
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -168,9 +178,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('tracer.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p><code>Tracer</code></p>
+                  <p>Tracer</p>
                 </a>
               </li>
             </ul>
