@@ -117,7 +117,15 @@ class RakserverController extends Controller
      */
     public function show($id)
     {
-        $data = Rakserver::find($id);
+        $data = DB::table('rakservers')
+                ->leftJoin('tbjenisraks', 'rakservers.kdjenis', '=', 'tbjenisraks.kdjenis')
+                ->leftJoin('tbmodelraks', 'rakservers.kdmodel', '=', 'tbmodelraks.kdmodel')
+                ->select('rakservers.*',
+                'tbmodelraks.namaModel', 
+                'tbjenisraks.namaJenis',
+                DB::raw('(SELECT COUNT(*) FROM data_perangkats WHERE data_perangkats.kodeRak = rakservers.kodeRak) as jml'
+                ))
+                ->get();
         return response()->json( $data);
     }
 

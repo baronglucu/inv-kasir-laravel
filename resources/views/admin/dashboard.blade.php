@@ -32,7 +32,7 @@
               
               <div class="info-box-content">
                 <span class="info-box-text">Jml Pengaduan</span>
-                <span class="info-box-number">
+                <span class="info-box-number" id="jmlPengaduan">
                   {{ $jmlPengaduan ?? 0 }}
                   <small> kasus</small>
                 </span>
@@ -48,7 +48,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Kapasitas WHM</span>
-                <span class="info-box-number">
+                <span class="info-box-number" id="totalWhm">
                   {{ $totalWhm ?? 0 }}
                   <small> slot</small>
                 </span>
@@ -68,7 +68,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Website Satuan</span>
-                <span class="info-box-number">{{ $jmlDomain ?? 0 }}
+                <span class="info-box-number" id="jmlDomain">{{ $jmlDomain ?? 0 }}
                   <small> Web</small></span>
               </div>
               <!-- /.info-box-content -->
@@ -881,6 +881,21 @@ $(function () {
         }
     });
 });
+</script>
+<script>
+function loadDashboardData() {
+    fetch('{{ route('dashboard.data') }}')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('jmlPengaduan').textContent = data.jmlPengaduan;
+            document.getElementById('totalWhm').textContent = data.totalWhm;
+            document.getElementById('jmlDomain').textContent = data.jmlDomain;
+        });
+}
+
+// Polling setiap 5 detik
+setInterval(loadDashboardData, 5000);
+document.addEventListener('DOMContentLoaded', loadDashboardData);
 </script>
 @endsection
   

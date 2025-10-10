@@ -124,20 +124,20 @@ document.getElementById('traceForm').addEventListener('submit', function(e) {
         body: JSON.stringify({ target: target })
     })
     .then(res => res.json())
-    .then(data => {
+        .then(data => {
         loading.style.display = 'none';
         if(data.success) {
-            let html = '<pre class="bg-dark text-light p-3 rounded">${data.output}</pre>';
+            let html = `<pre class="bg-dark text-light p-3 rounded">${data.output}</pre>`;
             if(data.geo && Object.keys(data.geo).length > 0) {
-                html += '<label for="target" class="form-label">Lokasi IP Hop :</label><ul>';
+                html += `<h5 class="mt-3">Lokasi IP Hop:</h5><ul>`;
                 Object.entries(data.geo).forEach(([ip, lokasi]) => {
-                    html += '<li><b>${ip}</b> -> ${lokasi}</li>';
+                    html += `<li><b>${ip}</b>: ${lokasi}</li>`;
                 });
-                html += '</ul>';
+                html += `</ul>`;
             }
             resultsDiv.innerHTML = html;
         } else {
-            resultsDiv.innerHTML = '<div class="alert alert-danger">Traceroute gagal atau target tidak ditemukan.</div>';
+            resultsDiv.innerHTML = `<div class="alert alert-danger">${data.error ?? 'Traceroute gagal atau target tidak ditemukan.'}</div>`;
         }
     })
     .catch(() => {

@@ -6,6 +6,8 @@ use App\Models\DataAplSisfo;
 use App\Models\Tbkotama;
 use App\Models\Tbsatminkal;
 use App\Models\DetailPenyedia;
+use App\Models\DataPerangkat;
+use App\Models\Rakserver;
 use DB;
 use Auth;
 use Illuminate\Http\Request;
@@ -22,6 +24,13 @@ class DataAplSisfoController extends Controller
         $kotama     = Tbkotama::all();
         $satuan     = Tbsatminkal::all();
         $mitra      = DetailPenyedia::all();
+        $dperang    = DataPerangkat::all();
+
+        $perangkat  = DB::table('data_perangkats')
+                    ->leftJoin('Rakservers', 'Rakservers.kodeRak', '=', 'data_perangkats.kodeRak')
+                    ->select('data_perangkats.*', 'Rakservers.namaRak')
+                    ->get()->groupBy('id_apl');
+        
         $dataapl    = DB::table('data_apl_sisfos')
                     ->leftJoin('detail_penyedias', 'data_apl_sisfos.id_mitra', '=', 'detail_penyedias.id_mitra')
                     ->leftJoin('tbkotamas', 'data_apl_sisfos.kd_ktm', '=', 'tbkotamas.kd_ktm')
@@ -30,14 +39,18 @@ class DataAplSisfoController extends Controller
                              $join->on('data_apl_sisfos.kd_ktm', '=', 'tbsatminkals.kd_ktm');
                              $join->on('data_apl_sisfos.kd_smkl','=', 'tbsatminkals.idsmkl');
                          })
-                    ->select('data_apl_sisfos.*', 'detail_penyedias.nama_mitra', 'tbkotamas.ur_ktm', 'tbsatminkals.ur_smkl')
+                    ->select('data_apl_sisfos.*', 
+                    'detail_penyedias.nama_mitra', 
+                    'tbkotamas.ur_ktm', 
+                    'tbsatminkals.ur_smkl',
+                    DB::raw('(SELECT COUNT(*) FROM data_perangkats WHERE data_perangkats.id_apl = data_apl_sisfos.id_apl) as jml'))
                     ->get();
 
         if($dataapl){
-            return view('admin.aplsisfo.index', compact('title','subtitle', 'kotama', 'satuan', 'mitra', 'dataapl'));
+            return view('admin.aplsisfo.index', compact('title','subtitle', 'kotama', 'satuan', 'mitra', 'dataapl', 'perangkat'));
         } else {
             $dataapl= '';
-            return view('admin.aplsisfo.index', compact('title','subtitle', 'kotama', 'satuan', 'mitra', 'dataapl'));
+            return view('admin.aplsisfo.index', compact('title','subtitle', 'kotama', 'satuan', 'mitra', 'dataapl', 'perangkat'));
         }
     }
 

@@ -52,6 +52,12 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="{{ route('rakserver.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Data Rak Server</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('produk.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Produk</p>
@@ -142,15 +148,21 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('rakserver.index') }}" class="nav-link">
+                <a href="{{ route(name: 'modelrak.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Data Rak Server</p>
+                  <p>Model Rak Server</p>
                 </a>
               </li>              
               <li class="nav-item">
-                <a href="pages/forms/validation.html" class="nav-link">
+                <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p><code>Data Mitra</code></p>
+                  <p>Jenis Server</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>User/Pengguna</p>
                 </a>
               </li>
             </ul>

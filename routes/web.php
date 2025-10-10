@@ -6,6 +6,7 @@ use App\Http\Controllers\DetailPenyediaController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\RakserverController;
+use App\Http\Controllers\TblModelServerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\WhmController;
@@ -22,6 +23,7 @@ Route::post('/register',[UserController::class,'registerStore'])->name('register
 Route::post('/login',[UserController::class,'loginCheck'])->name('login.check');
 Route::resource('users',UserController::class);
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard')->middleware('auth');
+Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('dashboard.data');
 
 // Route::get('/dashboard', function() {
 //     return view('admin.dashboard');
@@ -93,4 +95,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/aplsisfo/store', [DataAplSisfoController::class, 'store'])->name('aplsisfo.store');
     Route::post('/aplsisfo/{id}',[DataAplSisfoController::class,'index'])->name('permohonan.create');
     Route::resource('aplsisfo', DataAplSisfoController::class);    
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/modelrak', [TblModelServerController::class, 'index'])->name('modelrak.index');
+    Route::get('/modelrak/getJenis/{kdjenis}', [TblModelServerController::class, 'getJenis'])->name('modelrak.getJenis');
+    Route::post('/modelrak/getModel/{kdmodel}', [TblModelServerController::class, 'store'])->name('modelrak.getModel');
+    Route::resource('modelrak', TblModelServerController::class);
 });

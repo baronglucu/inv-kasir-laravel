@@ -30,4 +30,28 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact('jmlPengaduan', 'totalWhm', 'jmlDomain', 'dtAduPerBln'));
     }
+
+    public function getData()
+    {
+        $jmlPengaduan = DB::table('pengaduans')->count();
+        $jmlwhm = TbWhm::all(); // Mendapatkan semua produk
+        $totalWhm = $jmlwhm->sum('kapasitas'); 
+        $jmlDomain = DB::table('domains')->count();
+
+        $dtAduPerBln = Pengaduan::select(
+            DB::raw('DATE_FORMAT(tgl_laporan, "%Y-%m") as bulan'), // Format tanggal ke YYYY-MM
+            DB::raw('COUNT(*) as jumlah') // Hitung jumlah data
+        )
+        ->groupBy('bulan') // Kelompokkan berdasarkan bulan
+        ->orderBy('bulan', 'asc') // Urutkan berdasarkan bulan (opsional)
+        ->get();
+        // Tambahkan data lain jika perlu
+        return response()->json([
+            'jmlPengaduan' => $jmlPengaduan,
+            'jmlwhm'       => $jmlwhm,
+            'totalWhm'     => $totalWhm, 
+            'jmlDomain'    => $jmlDomain,
+            'dtAduPerBln'  => $dtAduPerBln
+        ]);
+    }
 }

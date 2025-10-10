@@ -64,7 +64,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>ID Aplikasi</th>
+                            <th>HW</th>
                             <th>Nama Aplikasi</th>
                             <th>IP Address</th>
                             <th>Nama Domain</th>    
@@ -76,16 +76,17 @@
                             <th>Bin LKT</th>   
                             <th>Layanan Jaringan</th>    
                             <th>Fungsi</th>   
-                            <th>Mitra</th>             
+                            <th>Mitra</th>
+                            {{-- <th>Jml HW</th>              --}}
                             <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($dataapl as $item)
-                            <tr>
+                            <tr data-idapl="{{ $item->id_apl }}">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->id_apl }}</td>
+                                <td class="details-control"><i class="fa fa-plus"></i>  {{ $item->jml }}</td>
                                 <td>{{ $item->nama_apl }}</td>
                                 <td>{{ $item->ip_add }}</td>
                                 <td>{{ $item->nm_dom }}</td>
@@ -110,7 +111,8 @@
                                 <td>{{ $item->lkt }}</td>
                                 <td>{{ $item->jaringan }}</td>   
                                 <td>{{ $item->fungsi }}</td>
-                                <td>{{ $item->nama_mitra }}</td>                   
+                                <td>{{ $item->nama_mitra }}</td>  
+                                {{-- <td></td>                  --}}
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
@@ -489,14 +491,98 @@
 <script src="{{ asset('')}}plugins/sweetalert2/sweetalert2.min.js"></script>
 
 <script type="text/javascript">
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        "columnDefs": [{ "visible": false, "targets": [ 4, 12, 14] }]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    });
+    // $(function () {
+    //   $("#example1").DataTable({
+    //     "responsive": true, "lengthChange": false, "autoWidth": false, "dom": 'Bfrtip',
+    //     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+    //     "columnDefs": [{ "visible": false, "targets": [ 4, 8, 9, 11, 12, 14] }]
+    //   }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    // });
 </script>
+
+<script>
+function formatChild(id_apl) {
+    // Data perangkat dari PHP (Blade ke JS)
+    var perangkat = @json($perangkat);
+
+    var rows = '';
+    if (perangkat[id_apl]) {
+        perangkat[id_apl].forEach(function(item, idx) {
+          let statusText = item.status === 'A' ? 'Aktif' : 'Non Aktif';
+            rows += `
+                <tr>
+                    <td>${idx+1}</td>
+                    <td>${item.serialNumber}</td>
+                    <td>${item.merk}</td>
+                    <td>${item.model}</td>
+                    <td>${item.kapasitas}</td>
+                    <td>${item.ip_address}</td>
+                    <td>${item.sistemOperasi}</td>
+                    <td>${item.namaRak}</td>
+                    <td>${statusText}</td>
+                </tr>
+            `;
+        });
+    } else {
+        rows = `<tr><td colspan="8" class="text-center"><code>Tidak ada perangkat</code></td></tr>`;
+    }
+
+    return `
+        <table class="table table-sm table-bordered mb-0">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Serial Number</th>
+                    <th>Merk</th>
+                    <th>Model</th>
+                    <th>Kapasitas</th>
+                    <th>IP Address</th>
+                    <th>Sistem Operasi</th>
+                    <th>Posisi Rak</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows}
+            </tbody>
+        </table>
+    `;
+}
+
+$(document).ready(function() {
+    if ( $.fn.DataTable.isDataTable('#example1') ) {
+            $('#example1').DataTable().destroy();
+        }
+    var table = $('#example1').DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        dom: 'Bfrtip',
+        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        columnDefs: [
+        { "visible": false, "targets": [4, 5, 8, 10, 11, 12, 15] }
+      ]
+    });
+
+    $('#example1 tbody').on('click', 'td.details-control', function () {
+        var tr      = $(this).closest('tr');
+        var row     = table.row(tr);
+        var id_apl = tr.data('idapl');
+        var icon    = $(this).find('i');
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            icon.removeClass('fa-minus').addClass('fa-plus');
+        } else {
+            row.child(formatChild(id_apl)).show();
+            tr.addClass('shown');
+            icon.removeClass('fa-plus').addClass('fa-minus');
+        }
+    });
+});
+</script>
+
 <script type="text/javascript">
   // let thnmulai = 2000;
   // let thnakhir = new Date().getFullYear();

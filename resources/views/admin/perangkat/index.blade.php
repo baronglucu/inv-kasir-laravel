@@ -125,7 +125,7 @@
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('perangkat.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm  btn-primary"><i class="fas fa-eye"></i></button>
+                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('perangkat.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm  btn-primary"><i class="fas fa-eye"></i></a>
                                     &nbsp;
                                     <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('perangkat.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;

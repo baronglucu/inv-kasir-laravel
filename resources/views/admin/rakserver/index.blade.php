@@ -70,7 +70,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>#</th>
+                            <th>HW</th>
                             <th>Kode Rak</th>
                             <th>Nama Rak</th>
                             <th>Jenis Rak</th>
@@ -95,7 +95,7 @@
                                 <td>{{ $item->keterangan }}</td>
                                 <td class="text-right">
                                   <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-primary" tooltip="Show" id="showDetail" data-id_rak="{{ $item->id }}"><i class="fas fa-eye"></i></button>
+                                    <a href="javascript:void(0)" id="showDetail" data-url="{{ route('rakserver.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-detail" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                                     &nbsp;
                                     <a href="javascript:void(0)" id="viewMessage" data-url="{{ route('rakserver.show', $item->id) }}" data-bs-toggle="modal" data-bs-target="#modal-update" class="btn btn-sm btn-info"><i class="fas fa-pencil-alt"></i></a>
                                     &nbsp;
@@ -152,15 +152,8 @@
                                     </select>
                                   </div>
                                   <div class="col-md-6">
-                                    <label for="kdmodel">Model Rak</label>
-                                    <select class="form-control select2" style="width: 100%;" id="kdmodel" name="kdmodel" >
-                                      <option value="">-- Pilih Model --</option>
-                                      @foreach ($modrak as $mrak)
-                                      <option value="{{$mrak->kdmodel}}">
-                                        {{$mrak->namaModel}}
-                                      </option>
-                                      @endforeach
-                                    </select>
+                                    <label for="kapasitas">Kapasitas</label>
+                                    <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control" required>
                                   </div>
                               </div>
                             </div>
@@ -168,17 +161,15 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group"> 
-                          <div class="form-group">
-                            <div class="row">
-                              <div class="col-md-6">
-                                <label for="kapasitas">Kapasitas</label>
-                                <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control" required>
-                              </div>
-                              <div class="col-md-6">
-
-                              </div>
-                            </div>
-                          </div>
+                          <label for="kdmodel">Model Rak</label>
+                          <select class="form-control select2" style="width: 100%;" id="kdmodel" name="kdmodel" >
+                              <option value="">-- Pilih Model --</option>
+                                @foreach ($modrak as $mrak)
+                              <option value="{{$mrak->kdmodel}}">
+                                {{$mrak->namaModel}}
+                              </option>
+                                 @endforeach
+                          </select>
                         </div>
                         <div class="form-group">
                             <label for="keterangan">Keterangan</label>
@@ -190,6 +181,66 @@
                     <button type="submit" class="btn btn-outline-light float-sm-right"><i class="fas fa-save"></i> Simpan</button>
                     <button type="button" id="btnClear" class="btn btn-outline-light"><i class="fa fa-eraser"></i> Kosongkan</button>
                 </div>               
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!-- /.modal-detail -->
+  <div class="modal fade" id="modal-detail" tabindex="-1" data-focus="false" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Detail Data</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="form-detail-rak" method="POST">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group"> 
+                            <label for="kodeRak">Kode Rak</label>
+                            <input type="text" class="form-control" name="kodeRak" id="kodeRak" oninput="this.value = this.value.toUpperCase()" disabled>
+                            <label for="namaRak">Nama Rak</label>
+                            <input type="text" id="namaRak" name="namaRak" class="form-control" disabled>
+                            <div class="form-group">
+                              <div class="row">
+                                  <div class="col-md-6">
+                                    <label for="kdjenis">Jenis Rak</label>
+                                    <input type="text" id="kdjenis" name="kdjenis" class="form-control" disabled>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <label for="kapasitas">Kapasitas</label>
+                                    <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control" disabled>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group"> 
+                          
+                                <label for="kdmodel">Model Rak</label>
+                                <input type="text" id="kdmodel" name="kdmodel" class="form-control" disabled>
+                        </div>
+                              
+                        
+                        <div class="form-group">
+                            <label for="keterangan">Keterangan</label>
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3" disabled></textarea>
+                        </div>
+                    </div>
+                </div>       
             </div>
           </form>
         </div>
@@ -227,8 +278,15 @@
                             <div class="form-group">
                               <div class="row">
                                   <div class="col-md-6">
-                                    <label for="model">Model Rak</label>
-                                    <input type="text" id="model" name="model" class="form-control" placeholder="Closed Rack, Open Rack, Wallmount Rack" required>
+                                    <label for="kdjenis">Jenis Rak</label>
+                                    <select class="form-control select2" style="width: 100%;" id="kdjenis" name="kdjenis" >
+                                      <option value="">-- Pilih Jenis-- --</option>
+                                          @foreach ($jnsrak as $rak)
+                                          <option value="{{$rak->kdjenis}}">
+                                              {{$rak->namaJenis}}
+                                          </option>
+                                          @endforeach
+                                    </select>
                                   </div>
                                   <div class="col-md-6">
                                     <label for="kapasitas">Kapasitas</label>
@@ -240,15 +298,15 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group"> 
-                          <label for="kdjenis">Jenis Rak</label>
-                          <select class="form-control select2" style="width: 100%;" id="kdjenis" name="kdjenis" >
-                              <option value="">-- Pilih Jenis-- --</option>
-                                  @foreach ($jnsrak as $rak)
-                                  <option value="{{$rak->kdjenis}}">
-                                      {{$rak->namaJenis}}
-                                  </option>
-                                  @endforeach
-                              </select>
+                          <label for="model">Model Rak</label>
+                          <select class="form-control select2" style="width: 100%;" id="kdmodel" name="kdmodel" >
+                            <option value="">-- Pilih Model-- --</option>
+                                @foreach ($modrak as $mod)
+                            <option value="{{$mod->kdmodel}}">
+                                {{$mod->namaModel}}
+                            </option>
+                                @endforeach
+                          </select>                          
                         </div>
                         <div class="form-group">
                             <label for="keterangan">Keterangan</label>
@@ -443,6 +501,33 @@ $(document).ready(function() {
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        $('#modal-update #kdjenis').change(function () {
+            var kdjen = $(this).val();
+            if (kdjen) {
+                $.ajax({
+                    url: '/get-model/' + kdjen,
+                    type: "GET",
+                    data: { kdjenis: kdjen },
+                    success: function (data) {
+                        // console.log(data);
+                        $('#modal-update #kdmodel').empty();
+                        $('#modal-update #kdmodel').append('<option value="">Pilih Model</option>');
+                        $.each(data, function (key, value) {
+                            $('#modal-update #kdmodel').append('<option value="' + value.kdmodel + '">' + value.namaModel + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#modal-update #kdmodel').empty();
+                $('#modal-update #kdmodel').append('<option value="">Pilih Model</option>');
+            }
+        });
+    });
+</script>
+
 <script>
   $('button[name="remove_levels"]').on('click', function(e) {
       var $form = $(this).closest('form');
@@ -490,14 +575,7 @@ $(document).ready(function() {
       });
   @endif
 </script>
-<script>
-  
-    $(document).on('click', '#showDetail', function(){
-      let idx = $(this).data('id');
-      alert(idx);
-    });
 
-</script>
 <script>
   $(document).ready(function() {
       $('#form-create-rak').submit(function(e) {
@@ -559,18 +637,38 @@ $(document).ready(function() {
         $.get(editURL, function(data){
             // console.log(data);
             $('#modal-update').modal('show');
-            $('#modal-update #id').val(data.id);
-            $('#modal-update #kodeRak').val(data.kodeRak);
-            $('#modal-update #namaRak').val(data.namaRak);
-            $('#modal-update #model').val(data.model);
-            $('#modal-update #kapasitas').val(data.kapasitas);
-            $('#modal-update #kdjenis').val(data.kdjenis);
-            $('#modal-update #keterangan').val(data.keterangan);
+            $('#modal-update #id').val(data[0].id);
+            $('#modal-update #kodeRak').val(data[0].kodeRak);
+            $('#modal-update #namaRak').val(data[0].namaRak);
+            $('#modal-update #kdmodel').val(data[0].kdmodel);
+            $('#modal-update #kapasitas').val(data[0].kapasitas);
+            $('#modal-update #kdjenis').val(data[0].kdjenis);
+            $('#modal-update #keterangan').val(data[0].keterangan);
             $('#modal-update #dataTemp').val(JSON.stringify(data));
         })
     });
   });
 </script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('body').on('click', '#showDetail', function(){
+        var editURL = $(this).data('url');
+        $.get(editURL, function(data){
+            console.log(data);
+            $('#modal-detail').modal('show');
+            $('#modal-detail #id').val(data[0].id);
+            $('#modal-detail #kodeRak').val(data[0].kodeRak);
+            $('#modal-detail #namaRak').val(data[0].namaRak);
+            $('#modal-detail #kdmodel').val(data[0].namaModel);
+            $('#modal-detail #kapasitas').val(data[0].kapasitas);
+            $('#modal-detail #kdjenis').val(data[0].namaJenis);
+            $('#modal-detail #keterangan').val(data[0].keterangan);
+        })
+    });
+  });
+</script>
+
 <script type="text/javascript">
   $(document).ready(function(){
     $('#form-update-rak').on('click', '#simpanEdit', function(e){
@@ -616,57 +714,4 @@ $(document).ready(function() {
   });
 </script>
 
-<script>
-    $(document).ready(function () {
-        $('#kotama').change(function () {
-            var kdktm = $(this).val();
-            // console.log(kdktm);
-            if (kdktm) {
-                $.ajax({
-                    url: '/get-satuan/' + kdktm,
-                    type: "GET",
-                    data: { kd_ktm: kdktm },
-                    success: function (data) {
-                        // console.log(data);
-                        $('#satuan').empty();
-                        $('#satuan').append('<option value="">Pilih Satuan</option>');
-                        $.each(data, function (key, value) {
-                            $('#satuan').append('<option value="' + value.idsmkl + '">' + value.ur_smkl + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#satuan').empty();
-                $('#satuan').append('<option value="">Pilih Satuan</option>');
-            }
-        });
-    });
-</script>
-
-<script>
-  $(document).ready(function () {
-      $('#modal-update #kotama').change(function () {
-          var kdktm = $(this).val();
-          // console.log(kdktm);
-          if (kdktm) {
-              $.ajax({
-                  url: '/get-satuan/' + kdktm,
-                  type: "GET",
-                  data: { kd_ktm: kdktm },
-                  success: function (data) {
-                      // console.log(data);
-                      $('#modal-update #satuan').empty();
-                      $('#modal-update #satuan').append('<option value="">Pilih Satuan</option>');
-                      $.each(data, function (key, value) {
-                          $('#modal-update #satuan').append('<option value="' + value.idsmkl + '">' + value.ur_smkl + '</option>');
-                      });
-                  }
-              });
-          } else {
-              $('#modal-update #satuan').empty();
-              $('#modal-update #satuan').append('<option value="">Pilih Satuan</option>');
-          }
-      });
-  });
-</script>
 @endsection

@@ -702,13 +702,6 @@
       // viewFile(fileUrl);
   });
 
-  $('#modal-tambah .select2').each(function() {  
-    var $p = $(this).parent(); 
-    $(this).select2({  
-      dropdownParent: $p  
-    });  
-  });
-
   function viewFile(fileUrl) {
     const fileExtension = fileUrl.split('.').pop().toLowerCase();
     if (fileExtension === 'pdf') { 
@@ -733,6 +726,21 @@
   });    
 </script>
 <script>
+    $('#modal-tambah').on('shown.bs.modal', function() {  
+        $('#modal-tambah .select2').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#modal-tambah')
+        });
+    });
+
+    $('#modal-update').on('shown.bs.modal', function () {
+        $('#modal-update .select2').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#modal-update')
+        });
+    });
+</script>
+<script>
   function confirmDelete(id) {
       Swal.fire({
           title: 'Apakah Anda yakin?',
@@ -749,6 +757,23 @@
           }
       });
   }
+</script>
+<script>
+  $('button[name="remove_levels"]').on('click', function(e) {
+      var $form = $(this).closest('form');
+      e.preventDefault();
+      $('#confirm').modal({
+          backdrop: 'static',
+          keyboard: false
+      })
+      .on('click', '#delete', function(e) {
+          $form.trigger('submit');
+        });
+      $("#cancel").on('click',function(e){
+       e.preventDefault();
+       $('#confirm').modal.model('hide');
+      });
+    });
 </script>
 <script>
   @if(session('swal'))
@@ -857,46 +882,9 @@
   $(document).ready(function() {
       $('#form-create-adu').submit(function(e) {
           e.preventDefault();
-
-      //     $.ajax({
-      //         type: 'POST',
-      //         url: "{{ route('pengaduan.store') }}",
-      //         data: dataForm,
-      //         dataType: 'json',
-      //         success: function(response) {
-      //             if(response.status == 200) {
-      //                 Swal.fire({
-      //                     icon: 'success',
-      //                     title: 'Sukses!',
-      //                     text: '{{ session('response.message') }}',
-      //                     confirmButtonText: 'OK'
-      //                   }).then(() => {
-      //                       window.location.href = "{{ route('pengaduan.index') }}"; // Redirect setelah OK ditekan
-      //                   });
-      //             } else {
-      //                 alert(response.message);
-      //                 $('#nama_pelapor').val('');
-      //             }
-      //         },
-      //         error: function(xhr) {
-      //             if(xhr.status == 500) {
-      //                 let errors = xhr.responseJSON.errors;
-      //                 let errorMessage = '';
-      //                 $.each(errors, function(key, value) {
-      //                     errorMessage += value[0] + '\n';
-      //                 });
-      //                 alert(errorMessage);
-      //             } else {
-      //                 alert('Terjadi kesalahan!, Silakan coba lagi.');
-      //             }
-      //         }
-      //     });
-      // });
-          // var dataForm1 = $(this).serialize() + "&_token={{ csrf_token() }}";
-          // var dataForm2 = $('input[name="file_surat"]').val();
+          
           var formData = new FormData(this);
           // alert(formData);
-
                 $.ajax({
                     url: "{{ route('pengaduan.store') }}",
                     type: 'POST',
@@ -908,14 +896,30 @@
                         // console.log('Data:', response);
                         $('#modal-tambah').modal('hide');
                         if (response.status === 200) {
-                            alert(response.message);
-                            location.reload();
+                            Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses!',
+                            text: '{{ session('response.message') }}',
+                            confirmButtonText: 'OK'
+                          }).then(() => {
+                              window.location.href = "{{ route('pengaduan.index') }}"; // Redirect setelah OK ditekan
+                          });
                         } else {
                             alert(response.message);
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.error('Gagal upload:', textStatus);
+                        // console.error('Gagal upload:', textStatus);
+                        if(xhr.status == 500) {
+                            let errors = xhr.responseJSON.errors;
+                            let errorMessage = '';
+                            $.each(errors, function(key, value) {
+                                errorMessage += value[0] + '\n';
+                            });
+                            alert(errorMessage);
+                        } else {
+                            alert('Terjadi kesalahan! No pengaduan ada yang sama, Silakan coba lagi.');
+                        }
                     }
                 });
             });
